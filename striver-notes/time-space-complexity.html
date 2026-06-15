@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time & Space Complexity — Striver A2Z DSA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&family=Permanent+Marker&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --card-hover: 0 12px 40px rgba(0,0,0,0.1);
+            --accent1: #e63946;
+            --accent2: #2a9d8f;
+            --accent3: #457b9d;
+            --accent4: #e9a820;
+            --accent5: #7c3aed;
+            --accent6: #db2777;
+            --accent7: #059669;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --code-bg: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(122,58,237,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(42,157,143,0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(233,168,32,0.03) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1350px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, var(--accent1), var(--accent5), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header .sub {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .header .tags {
+            margin-top: 14px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: var(--card-hover);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 5px;
+        }
+        .card.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+        .card.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent7)); }
+        .card.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent5)); }
+        .card.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent1)); }
+        .card.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent3)); }
+        .card.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent4)); }
+        .card.c7::before { background: linear-gradient(90deg, var(--accent7), var(--accent2)); }
+
+        .card.span2 { grid-column: span 2; }
+        .card.span3 { grid-column: 1 / -1; }
+
+        .card-icon { font-size: 2rem; margin-bottom: 6px; display: block; }
+        .card h2 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .card.c1 h2 { color: var(--accent1); }
+        .card.c2 h2 { color: var(--accent2); }
+        .card.c3 h2 { color: var(--accent3); }
+        .card.c4 h2 { color: var(--accent4); }
+        .card.c5 h2 { color: var(--accent5); }
+        .card.c6 h2 { color: var(--accent6); }
+        .card.c7 h2 { color: var(--accent7); }
+
+        /* Code */
+        pre {
+            background: var(--code-bg);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.76rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 10px 0;
+            color: #e2e8f0;
+        }
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 0.78rem;
+            color: var(--accent5);
+        }
+        .kw { color: #c084fc; font-weight: 500; }
+        .fn { color: #67e8f9; }
+        .str { color: #6ee7b7; }
+        .cm { color: #94a3b8; font-style: italic; }
+        .num { color: #fbbf24; }
+        .type { color: #f472b6; }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 3px 2px;
+        }
+        .tag.t-red { background: #fef2f2; color: var(--accent1); border: 1px solid #fecaca; }
+        .tag.t-green { background: #ecfdf5; color: var(--accent7); border: 1px solid #a7f3d0; }
+        .tag.t-blue { background: #eff6ff; color: var(--accent3); border: 1px solid #bfdbfe; }
+        .tag.t-yellow { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .tag.t-purple { background: #f5f3ff; color: var(--accent5); border: 1px solid #ddd6fe; }
+        .tag.t-pink { background: #fdf2f8; color: var(--accent6); border: 1px solid #fbcfe8; }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 0.78rem;
+            border: 1px solid var(--border);
+        }
+        .data-table th {
+            background: #f8fafc;
+            color: var(--text);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+        }
+        .data-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .data-table tr:hover td { background: #f8fafc; }
+
+        /* Ranking bar */
+        .rank-bar {
+            display: flex;
+            gap: 6px;
+            margin: 14px 0;
+            flex-wrap: wrap;
+        }
+        .rank-item {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .rank-item:hover { transform: scale(1.08); }
+        .rank-item .rank-label {
+            display: block;
+            font-size: 0.62rem;
+            margin-top: 4px;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+        .r1 { background: #ecfdf5; color: var(--accent7); border: 1px solid #a7f3d0; }
+        .r2 { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+        .r3 { background: #f5f3ff; color: var(--accent5); border: 1px solid #ddd6fe; }
+        .r4 { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .r5 { background: #fdf2f8; color: var(--accent6); border: 1px solid #fbcfe8; }
+        .r6 { background: #fef2f2; color: var(--accent1); border: 1px solid #fecaca; }
+
+        /* Tip & Warning */
+        .tip-box {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .warn-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            color: var(--accent1);
+        }
+
+        /* Handwritten */
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            font-size: 1.15rem;
+            color: var(--accent5);
+        }
+
+        /* Rule cards */
+        .rule {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin: 8px 0;
+        }
+        .rule h3 {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            color: var(--accent4);
+            font-weight: 800;
+        }
+
+        /* Constraint highlight */
+        .constraint-highlight {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+
+        /* Pro tip banner */
+        .protip {
+            background: linear-gradient(135deg, #f5f3ff, #eff6ff, #fdf2f8);
+            border: 2px solid #ddd6fe;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .protip h2 { font-family: 'Permanent Marker', cursive; font-size: 1.8rem; color: var(--accent5); }
+        .protip p { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--text); margin-top: 8px; }
+
+        /* Space visual */
+        .space-visual {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .space-box {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .space-box.aux {
+            background: #ecfdf5;
+            border: 2px solid #a7f3d0;
+        }
+        .space-box.total {
+            background: #f5f3ff;
+            border: 2px solid #ddd6fe;
+        }
+        .space-box h4 { font-size: 0.85rem; margin-bottom: 6px; }
+        .space-box p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+            .card.span2 { grid-column: span 2; }
+            .card.span3 { grid-column: span 2; }
+            .header h1 { font-size: 2.4rem; }
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .card.span2, .card.span3 { grid-column: span 1; }
+            .header h1 { font-size: 1.8rem; }
+            .container { padding: 20px 12px; }
+            .space-visual { flex-direction: column; }
+            .rank-bar { gap: 6px; }
+            .rank-item { min-width: 60px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Time & Space Complexity</h1>
+        <div class="sub">Striver A2Z DSA Course — Master the Foundation ⏱️</div>
+        <div class="tags">
+            <span class="tag t-red">Must Know</span>
+            <span class="tag t-green">Big O</span>
+            <span class="tag t-yellow">Constraints</span>
+            <span class="tag t-purple">Analysis</span>
+        </div>
+    </div>
+
+    <!-- GRID -->
+    <div class="grid">
+
+        <!-- WHAT IS TC -->
+        <div class="card c2 span2">
+            <span class="card-icon">🧠</span>
+            <h2>What is Time Complexity?</h2>
+            <p style="font-size:0.95rem; margin-bottom:10px;">
+                <strong>Rate at which time taken increases with respect to input size.</strong>
+            </p>
+            <ul style="font-size:0.84rem; list-style:none; line-height:2.2;">
+                <li>🚫 NOT actual time in seconds</li>
+                <li>✅ It's the <strong>growth pattern</strong> of operations</li>
+                <li>✅ We count operations relative to <code>N</code></li>
+                <li>🎯 Focus on <strong>WORST CASE</strong> (Big O)</li>
+            </ul>
+            <div class="handwritten" style="margin-top:10px;">
+                "If input doubles, how much MORE work does your code do?"
+            </div>
+        </div>
+
+        <!-- NOTATION QUICK -->
+        <div class="card c4">
+            <span class="card-icon">📝</span>
+            <h2>Notations</h2>
+            <table class="data-table">
+                <tr><th>Symbol</th><th>Means</th></tr>
+                <tr><td style="color:var(--accent1);font-weight:700;">Big O</td><td>Worst Case (upper bound)</td></tr>
+                <tr><td style="color:var(--accent4);font-weight:700;">Theta Θ</td><td>Average Case</td></tr>
+                <tr><td style="color:var(--accent2);font-weight:700;">Omega Ω</td><td>Best Case (lower bound)</td></tr>
+            </table>
+            <div class="tip-box">
+                <span>🎯</span>
+                <span>Interviews = always talk <strong>Big O</strong> (worst case)</span>
+            </div>
+        </div>
+
+        <!-- RANKING BAR -->
+        <div class="card c3 span3">
+            <span class="card-icon">📊</span>
+            <h2>The Big O Ranking</h2>
+            <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:4px;">BEST ←———————————————————————————→ WORST</p>
+            <div class="rank-bar">
+                <div class="rank-item r1">
+                    O(1)
+                    <span class="rank-label">constant</span>
+                </div>
+                <div class="rank-item r1">
+                    O(log N)
+                    <span class="rank-label">binary search</span>
+                </div>
+                <div class="rank-item r2">
+                    O(N)
+                    <span class="rank-label">single loop</span>
+                </div>
+                <div class="rank-item r3">
+                    O(N log N)
+                    <span class="rank-label">merge sort</span>
+                </div>
+                <div class="rank-item r4">
+                    O(N²)
+                    <span class="rank-label">nested loops</span>
+                </div>
+                <div class="rank-item r5">
+                    O(2^N)
+                    <span class="rank-label">recursion</span>
+                </div>
+                <div class="rank-item r6">
+                    O(N!)
+                    <span class="rank-label">permutations</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULES -->
+        <div class="card c4 span2">
+            <span class="card-icon">🔥</span>
+            <h2>Rules to Calculate</h2>
+
+            <div class="rule">
+                <h3>Rule 1: Drop Constants</h3>
+<pre><span class="kw">for</span>(<span class="type">int</span> i=<span class="num">0</span>; i &lt; <span class="num">5</span>*n; i++) { }
+<span class="cm">// O(5N) → just O(N)</span></pre>
+                <span class="handwritten">Constants vanish at scale 🪄</span>
+            </div>
+
+            <div class="rule">
+                <h3>Rule 2: Drop Lower Order Terms</h3>
+<pre><span class="cm">// O(N² + N + 1) → O(N²)</span>
+<span class="cm">// N² dominates when N is huge</span></pre>
+            </div>
+
+            <div class="rule">
+                <h3>Rule 3: Different Inputs = Different Variables</h3>
+<pre><span class="kw">for</span>(i=<span class="num">0</span>; i&lt;n; i++)
+  <span class="kw">for</span>(j=<span class="num">0</span>; j&lt;m; j++) { }
+<span class="cm">// This is O(N × M), NOT O(N²)</span></pre>
+            </div>
+        </div>
+
+        <!-- COMMON PATTERNS -->
+        <div class="card c1">
+            <span class="card-icon">🎯</span>
+            <h2>Pattern → Complexity</h2>
+            <table class="data-table">
+                <tr><th>Pattern</th><th>TC</th></tr>
+                <tr><td>formula / math</td><td><span class="tag t-green">O(1)</span></td></tr>
+                <tr><td>single loop</td><td><span class="tag t-green">O(N)</span></td></tr>
+                <tr><td>halving (binary search)</td><td><span class="tag t-green">O(log N)</span></td></tr>
+                <tr><td>sorting</td><td><span class="tag t-yellow">O(N log N)</span></td></tr>
+                <tr><td>two nested loops</td><td><span class="tag t-pink">O(N²)</span></td></tr>
+                <tr><td>2 recursive branches</td><td><span class="tag t-red">O(2^N)</span></td></tr>
+                <tr><td>all permutations</td><td><span class="tag t-red">O(N!)</span></td></tr>
+            </table>
+        </div>
+
+        <!-- CODE EXAMPLES -->
+        <div class="card c5 span2">
+            <span class="card-icon">💻</span>
+            <h2>See it in Code</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div>
+                    <span class="tag t-green">O(1) Constant</span>
+<pre><span class="type">int</span> x = arr[<span class="num">0</span>];
+<span class="type">int</span> sum = n*(n+<span class="num">1</span>)/<span class="num">2</span>;</pre>
+                </div>
+                <div>
+                    <span class="tag t-green">O(log N) Halving</span>
+<pre><span class="kw">while</span>(lo &lt;= hi) {
+  mid = (lo+hi)/<span class="num">2</span>;
+  <span class="cm">// halves each time</span>
+}</pre>
+                </div>
+                <div>
+                    <span class="tag t-blue">O(N) Linear</span>
+<pre><span class="kw">for</span>(<span class="type">int</span> i=<span class="num">0</span>; i&lt;n; i++)
+  cout &lt;&lt; arr[i];</pre>
+                </div>
+                <div>
+                    <span class="tag t-pink">O(N²) Quadratic</span>
+<pre><span class="kw">for</span>(i=<span class="num">0</span>; i&lt;n; i++)
+  <span class="kw">for</span>(j=<span class="num">0</span>; j&lt;n; j++)
+    cout &lt;&lt; i &lt;&lt; j;</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10^8 RULE -->
+        <div class="card c4">
+            <span class="card-icon">⚡</span>
+            <h2>The 10⁸ Rule</h2>
+            <div style="text-align:center; margin:10px 0;">
+                <span style="font-family:'Permanent Marker';font-size:1.5rem;color:var(--accent4);">1 sec ≈ 10⁸ ops</span>
+            </div>
+            <div class="constraint-highlight">
+                <table class="data-table" style="border:none;">
+                    <tr><th>N ≤</th><th>Max TC</th><th>Think...</th></tr>
+                    <tr><td>10</td><td>O(N!)</td><td>brute force</td></tr>
+                    <tr><td>20</td><td>O(2^N)</td><td>bitmask</td></tr>
+                    <tr><td>100</td><td>O(N³)</td><td>triple loop</td></tr>
+                    <tr><td>10³</td><td>O(N²)</td><td>nested loop</td></tr>
+                    <tr><td>10⁵</td><td>O(N log N)</td><td>sort / BS</td></tr>
+                    <tr><td>10⁶</td><td>O(N)</td><td>one pass</td></tr>
+                    <tr><td>10⁸</td><td>O(log N)</td><td>math / BS</td></tr>
+                </table>
+            </div>
+            <div class="handwritten" style="margin-top:10px;">☝️ Read constraints FIRST → pick approach!</div>
+        </div>
+
+        <!-- SPACE COMPLEXITY -->
+        <div class="card c7 span2">
+            <span class="card-icon">🗄️</span>
+            <h2>Space Complexity</h2>
+            <p style="font-size:0.88rem; margin-bottom:8px;"><strong>Extra memory your algorithm uses</strong> (excluding input)</p>
+
+            <div class="space-visual">
+                <div class="space-box aux">
+                    <h4 style="color:var(--accent7);">Auxiliary Space</h4>
+                    <p>Extra space used by algo</p>
+                    <p style="color:var(--accent7); font-weight:600; margin-top:4px;">← we usually mean THIS</p>
+                </div>
+                <div class="space-box total">
+                    <h4 style="color:var(--accent5);">Total Space</h4>
+                    <p>Input + Auxiliary</p>
+                    <p style="color:var(--accent5); font-weight:600; margin-top:4px;">less commonly asked</p>
+                </div>
+            </div>
+
+<pre style="margin-top:14px;"><span class="cm">// O(1) space — just a variable</span>
+<span class="type">int</span> sum = <span class="num">0</span>;
+<span class="kw">for</span>(<span class="type">int</span> i=<span class="num">0</span>; i&lt;n; i++) sum += arr[i];
+
+<span class="cm">// O(N) space — new array</span>
+<span class="type">int</span> temp[n];
+
+<span class="cm">// O(N) space — recursion stack</span>
+<span class="kw">void</span> <span class="fn">print</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n==<span class="num">0</span>) <span class="kw">return</span>;
+    <span class="fn">print</span>(n-<span class="num">1</span>); <span class="cm">// N calls in stack</span>
+}</pre>
+        </div>
+
+        <!-- QUICK ID CHEAT -->
+        <div class="card c6">
+            <span class="card-icon">🎯</span>
+            <h2>Quick ID Cheat</h2>
+            <table class="data-table">
+                <tr><th>See this?</th><th>TC</th><th>SC</th></tr>
+                <tr><td>math formula</td><td>O(1)</td><td>O(1)</td></tr>
+                <tr><td>single loop</td><td>O(N)</td><td>O(1)</td></tr>
+                <tr><td>nested loop</td><td>O(N²)</td><td>O(1)</td></tr>
+                <tr><td>halving loop</td><td>O(log N)</td><td>O(1)</td></tr>
+                <tr><td>sort call</td><td>O(N log N)</td><td>O(N)</td></tr>
+                <tr><td>2-branch recursion</td><td>O(2^N)</td><td>O(N)</td></tr>
+                <tr><td>all permutations</td><td>O(N!)</td><td>O(N)</td></tr>
+            </table>
+        </div>
+
+        <!-- COMMON MISTAKES -->
+        <div class="card c1 span3">
+            <span class="card-icon">❌</span>
+            <h2>Common Mistakes</h2>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:10px; margin-top:8px;">
+                <div class="warn-box" style="margin:0;">
+                    <span>❌</span>
+                    <span>Saying <code>O(2N)</code> instead of <code>O(N)</code> — drop the constant!</span>
+                </div>
+                <div class="warn-box" style="margin:0;">
+                    <span>❌</span>
+                    <span>Confusing <code>O(N²)</code> with <code>O(N×M)</code> — different inputs!</span>
+                </div>
+                <div class="warn-box" style="margin:0;">
+                    <span>❌</span>
+                    <span>Ignoring <strong>recursion stack space</strong> — each call = memory!</span>
+                </div>
+                <div class="warn-box" style="margin:0;">
+                    <span>❌</span>
+                    <span>Thinking sorting is <code>O(N)</code> — comparison sort min is <code>O(N log N)</code></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRO TIP -->
+        <div class="card protip">
+            <h2>⭐ The Golden Trick</h2>
+            <p>Read the constraints FIRST → use the 10⁸ rule → know your max allowed complexity BEFORE coding.</p>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

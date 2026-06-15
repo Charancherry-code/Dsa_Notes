@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Basics — DSA Sketchnotes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #1a1a2e;
+            --surface: #16213e;
+            --card: #0f3460;
+            --accent1: #e94560;
+            --accent2: #0ea5e9;
+            --accent3: #10b981;
+            --accent4: #f59e0b;
+            --accent5: #a78bfa;
+            --accent6: #f472b6;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --glow1: rgba(233, 69, 96, 0.3);
+            --glow2: rgba(14, 165, 233, 0.3);
+            --glow3: rgba(16, 185, 129, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(233, 69, 96, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(167, 139, 250, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent1), var(--accent2), transparent);
+            border-radius: 2px;
+        }
+        .header h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+            text-shadow: 0 0 40px var(--glow1);
+        }
+        .header .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        .header .badge-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .header .badge-row span {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* CARDS */
+        .card {
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            border-radius: 20px 20px 0 0;
+        }
+        .card.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+        .card.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent5)); }
+        .card.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent4)); }
+        .card.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent1)); }
+        .card.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent2)); }
+        .card.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent3)); }
+
+        .card.span2 { grid-column: span 2; }
+        .card.span3 { grid-column: span 3; }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .card h2 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .card.c1 h2 { color: var(--accent1); }
+        .card.c2 h2 { color: var(--accent2); }
+        .card.c3 h2 { color: var(--accent3); }
+        .card.c4 h2 { color: var(--accent4); }
+        .card.c5 h2 { color: var(--accent5); }
+        .card.c6 h2 { color: var(--accent6); }
+
+        /* Code blocks */
+        pre {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 10px 0;
+            color: #e2e8f0;
+        }
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(255,255,255,0.08);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            color: var(--accent2);
+        }
+
+        /* Syntax colors inside pre */
+        .kw { color: var(--accent5); font-weight: 500; }
+        .fn { color: var(--accent2); }
+        .str { color: var(--accent3); }
+        .cm { color: var(--text-muted); font-style: italic; }
+        .num { color: var(--accent4); }
+        .type { color: var(--accent6); }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 3px 2px;
+        }
+        .tag.t-red { background: rgba(233,69,96,0.15); color: var(--accent1); border: 1px solid rgba(233,69,96,0.3); }
+        .tag.t-blue { background: rgba(14,165,233,0.15); color: var(--accent2); border: 1px solid rgba(14,165,233,0.3); }
+        .tag.t-green { background: rgba(16,185,129,0.15); color: var(--accent3); border: 1px solid rgba(16,185,129,0.3); }
+        .tag.t-yellow { background: rgba(245,158,11,0.15); color: var(--accent4); border: 1px solid rgba(245,158,11,0.3); }
+        .tag.t-purple { background: rgba(167,139,250,0.15); color: var(--accent5); border: 1px solid rgba(167,139,250,0.3); }
+
+        /* Comparison boxes */
+        .vs-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .vs-box {
+            flex: 1;
+            padding: 16px;
+            border-radius: 14px;
+            position: relative;
+        }
+        .vs-box.bad {
+            background: rgba(233,69,96,0.08);
+            border: 1px solid rgba(233,69,96,0.25);
+        }
+        .vs-box.good {
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+        .vs-box h3 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        .vs-box.bad h3 { color: var(--accent1); }
+        .vs-box.good h3 { color: var(--accent3); }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 10px;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 0.8rem;
+        }
+        .data-table th {
+            background: rgba(14,165,233,0.15);
+            color: var(--accent2);
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .data-table tr:hover td {
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* Tip box */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(14,165,233,0.05));
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .tip-box .tip-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+        /* Warning box */
+        .warn-box {
+            background: rgba(233,69,96,0.08);
+            border: 1px solid rgba(233,69,96,0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        /* Flow diagram */
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .flow-step {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .flow-arrow { color: var(--accent1); font-weight: bold; font-size: 1.1rem; }
+
+        /* Loop badges row */
+        .loop-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .loop-item {
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .loop-item .loop-name {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .loop-item .loop-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* PRO TIP BANNER */
+        .protip {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(233,69,96,0.1));
+            border: 1px solid rgba(167,139,250,0.3);
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .protip::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(167,139,250,0.1) 0%, transparent 60%);
+            animation: protipGlow 4s ease-in-out infinite alternate;
+        }
+        @keyframes protipGlow {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(10%, 10%); }
+        }
+        .protip h2 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.8rem;
+            color: var(--accent5);
+            position: relative;
+        }
+        .protip p {
+            font-family: 'Caveat', cursive;
+            font-size: 1.4rem;
+            color: var(--text);
+            margin-top: 8px;
+            position: relative;
+        }
+
+        /* Handwritten annotations */
+        .handwritten {
+            font-family: 'Caveat', cursive;
+            font-size: 1.1rem;
+            color: var(--accent4);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+            .card.span2 { grid-column: span 2; }
+            .card.span3 { grid-column: span 2; }
+            .header h1 { font-size: 2.5rem; }
+        }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            .card.span2, .card.span3 { grid-column: span 1; }
+            .header h1 { font-size: 2rem; }
+            .vs-container { flex-direction: column; }
+            .loop-grid { grid-template-columns: 1fr; }
+            .container { padding: 20px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>C++ Basics</h1>
+            <div class="subtitle">Striver A2Z DSA Sheet — One Shot Prerequisite ✨</div>
+            <div class="badge-row">
+                <span class="tag t-red">Beginner</span>
+                <span class="tag t-blue">C++</span>
+                <span class="tag t-green">Must Know</span>
+                <span class="tag t-purple">Foundation</span>
+            </div>
+        </div>
+
+        <!-- GRID -->
+        <div class="grid">
+
+            <!-- PROGRAM STRUCTURE -->
+            <div class="card c2">
+                <span class="card-icon">📐</span>
+                <h2>Program Structure</h2>
+<pre><span class="cm">// The skeleton of every C++ program</span>
+<span class="kw">#include</span> &lt;bits/stdc++.h&gt;
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="cm">// your code here</span>
+    <span class="kw">return</span> <span class="num">0</span>;
+}</pre>
+                <div style="margin-top:10px;">
+                    <span class="tag t-blue">bits/stdc++.h</span> <span class="handwritten">→ includes everything!</span><br>
+                    <span class="tag t-purple">namespace std</span> <span class="handwritten">→ no std:: needed</span>
+                </div>
+            </div>
+
+            <!-- DATA TYPES -->
+            <div class="card c3 span2">
+                <span class="card-icon">📦</span>
+                <h2>Data Types</h2>
+                <table class="data-table">
+                    <tr><th>Type</th><th>Size</th><th>Range / Use</th><th>Example</th></tr>
+                    <tr><td><code>int</code></td><td>4 bytes</td><td>up to ±2 × 10⁹</td><td><code>int x = 42;</code></td></tr>
+                    <tr><td><code>long long</code></td><td>8 bytes</td><td>up to ±9 × 10¹⁸</td><td><code>long long n = 1e18;</code></td></tr>
+                    <tr><td><code>double</code></td><td>8 bytes</td><td>decimal numbers</td><td><code>double pi = 3.14159;</code></td></tr>
+                    <tr><td><code>char</code></td><td>1 byte</td><td>single character</td><td><code>char grade = 'A';</code></td></tr>
+                    <tr><td><code>string</code></td><td>dynamic</td><td>sequence of chars</td><td><code>string s = "hello";</code></td></tr>
+                </table>
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <span>Use <code>long long</code> when N ≤ 10¹⁸ or when multiplying two large ints — avoid overflow!</span>
+                </div>
+            </div>
+
+            <!-- IF ELSE -->
+            <div class="card c1">
+                <span class="card-icon">🔀</span>
+                <h2>If - Else</h2>
+<pre><span class="kw">if</span> (age >= <span class="num">18</span>) {
+    cout &lt;&lt; <span class="str">"Adult"</span>;
+} <span class="kw">else if</span> (age >= <span class="num">13</span>) {
+    cout &lt;&lt; <span class="str">"Teen"</span>;
+} <span class="kw">else</span> {
+    cout &lt;&lt; <span class="str">"Child"</span>;
+}</pre>
+                <div class="flow-row">
+                    <span class="flow-step">condition?</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">true: do this</span>
+                    <span class="flow-arrow">→</span>
+                    <span class="flow-step">else: fallback</span>
+                </div>
+            </div>
+
+            <!-- SWITCH -->
+            <div class="card c4">
+                <span class="card-icon">🎛️</span>
+                <h2>Switch</h2>
+<pre><span class="kw">switch</span> (day) {
+  <span class="kw">case</span> <span class="num">1</span>: cout &lt;&lt; <span class="str">"Mon"</span>; <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="num">2</span>: cout &lt;&lt; <span class="str">"Tue"</span>; <span class="kw">break</span>;
+  <span class="kw">default</span>: cout &lt;&lt; <span class="str">"Other"</span>;
+}</pre>
+                <div class="warn-box">
+                    <span>⚠️</span>
+                    <span>Forget <code>break</code> = <strong>falls through</strong> to next case! Always add it.</span>
+                </div>
+            </div>
+
+            <!-- ARRAYS -->
+            <div class="card c5 span2">
+                <span class="card-icon">🗃️</span>
+                <h2>Arrays</h2>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <div>
+                        <span class="tag t-purple">1D Array</span>
+<pre><span class="type">int</span> arr[<span class="num">5</span>] = {<span class="num">10,20,30,40,50</span>};
+<span class="cm">//index:  [0][1][2][3][4]</span>
+
+arr[<span class="num">0</span>] <span class="cm">→ 10 (first)</span>
+arr[<span class="num">4</span>] <span class="cm">→ 50 (last)</span></pre>
+                    </div>
+                    <div>
+                        <span class="tag t-blue">2D Array</span>
+<pre><span class="type">int</span> mat[<span class="num">3</span>][<span class="num">3</span>] = {
+  {<span class="num">1, 2, 3</span>},
+  {<span class="num">4, 5, 6</span>},
+  {<span class="num">7, 8, 9</span>}
+};
+mat[<span class="num">1</span>][<span class="num">2</span>] <span class="cm">→ 6</span></pre>
+                    </div>
+                </div>
+                <div style="margin-top:12px;">
+                    <span class="tag t-red">Zero-Indexed</span>
+                    <span class="tag t-blue">Contiguous Memory</span>
+                    <span class="tag t-green">Passed by Reference</span>
+                </div>
+                <div class="handwritten" style="margin-top:8px;">☝️ first element is always arr[0], not arr[1]!</div>
+            </div>
+
+            <!-- STRINGS -->
+            <div class="card c6">
+                <span class="card-icon">🔤</span>
+                <h2>Strings</h2>
+<pre><span class="type">string</span> name = <span class="str">"Striver"</span>;
+
+name[<span class="num">0</span>]       <span class="cm">→ 'S'</span>
+name.<span class="fn">length</span>() <span class="cm">→ 7</span>
+
+cin >> s;         <span class="cm">// one word only</span>
+<span class="fn">getline</span>(cin, s); <span class="cm">// full line</span></pre>
+                <div class="handwritten">Works just like an array of characters 🤝</div>
+            </div>
+
+            <!-- LOOPS -->
+            <div class="card c2 span2">
+                <span class="card-icon">🔁</span>
+                <h2>Loops</h2>
+                <div class="loop-grid">
+                    <div class="loop-item">
+                        <span class="loop-name" style="color:var(--accent1);">for</span>
+                        <span class="loop-desc">known iterations</span>
+<pre style="text-align:left;font-size:0.72rem;"><span class="kw">for</span>(<span class="type">int</span> i=<span class="num">0</span>; i&lt;n; i++) {
+  cout &lt;&lt; arr[i];
+}</pre>
+                    </div>
+                    <div class="loop-item">
+                        <span class="loop-name" style="color:var(--accent2);">while</span>
+                        <span class="loop-desc">condition-based</span>
+<pre style="text-align:left;font-size:0.72rem;"><span class="kw">while</span>(i &lt; n) {
+  cout &lt;&lt; i;
+  i++;
+}</pre>
+                    </div>
+                    <div class="loop-item">
+                        <span class="loop-name" style="color:var(--accent3);">do-while</span>
+                        <span class="loop-desc">runs at least once</span>
+<pre style="text-align:left;font-size:0.72rem;"><span class="kw">do</span> {
+  cout &lt;&lt; i; i++;
+} <span class="kw">while</span>(i &lt; n);</pre>
+                    </div>
+                </div>
+                <div class="handwritten" style="margin-top:10px;">⭐ for loop = your best friend in DSA (90% of the time)</div>
+            </div>
+
+            <!-- FUNCTIONS -->
+            <div class="card c3">
+                <span class="card-icon">⚙️</span>
+                <h2>Functions</h2>
+<pre><span class="type">int</span> <span class="fn">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+    <span class="kw">return</span> a + b;
+}
+
+<span class="cm">// call it:</span>
+cout &lt;&lt; <span class="fn">add</span>(<span class="num">3</span>, <span class="num">5</span>); <span class="cm">// → 8</span></pre>
+                <div style="margin-top:10px;">
+                    <span class="tag t-green">Modular</span>
+                    <span class="tag t-blue">Reusable</span>
+                    <span class="tag t-purple">Readable</span>
+                </div>
+            </div>
+
+            <!-- PASS BY VALUE vs REFERENCE -->
+            <div class="card c1 span3">
+                <span class="card-icon">🔥</span>
+                <h2>Pass by Value vs Reference</h2>
+                <div class="vs-container">
+                    <div class="vs-box bad">
+                        <h3>❌ Pass by Value</h3>
+                        <code>void f(int x)</code>
+                        <p style="margin-top:8px; font-size:0.85rem;">Gets a <strong>COPY</strong></p>
+                        <p style="font-size:0.85rem;">Original stays <strong>UNCHANGED</strong></p>
+<pre style="font-size:0.72rem;"><span class="kw">void</span> <span class="fn">inc</span>(<span class="type">int</span> x) { x++; }
+<span class="type">int</span> a = <span class="num">5</span>;
+<span class="fn">inc</span>(a);
+<span class="cm">// a is still 5 😢</span></pre>
+                    </div>
+                    <div class="vs-box good">
+                        <h3>✅ Pass by Reference</h3>
+                        <code>void f(int &x)</code>
+                        <p style="margin-top:8px; font-size:0.85rem;">Gets the <strong>ORIGINAL</strong></p>
+                        <p style="font-size:0.85rem;">Original gets <strong>MODIFIED</strong></p>
+<pre style="font-size:0.72rem;"><span class="kw">void</span> <span class="fn">inc</span>(<span class="type">int</span> &x) { x++; }
+<span class="type">int</span> a = <span class="num">5</span>;
+<span class="fn">inc</span>(a);
+<span class="cm">// a is now 6 🎉</span></pre>
+                    </div>
+                </div>
+                <div class="tip-box" style="margin-top:14px;">
+                    <span class="tip-icon">⚡</span>
+                    <span><strong>Arrays are ALWAYS passed by reference</strong> — no & needed. Any change inside function changes the original array!</span>
+                </div>
+            </div>
+
+            <!-- PRO TIP -->
+            <div class="card protip">
+                <h2>⭐ Striver's Pro Tip</h2>
+                <p>"Don't dig too deep at the start. Learn basics → Start solving problems → Deepen understanding as you go."</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

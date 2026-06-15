@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Notes — FAANG Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Permanent+Marker&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --accent1: #e63946;
+            --accent2: #2a9d8f;
+            --accent3: #457b9d;
+            --accent5: #7c3aed;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--accent1), var(--accent5), var(--accent3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+        .section-title {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.4rem;
+            color: var(--accent5);
+            margin: 30px 0 14px;
+            padding-left: 4px;
+        }
+        .note-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+        }
+        .note-list a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 22px;
+            text-decoration: none;
+            color: var(--text);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+        .note-list a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border-color: var(--accent5);
+        }
+        .note-icon { font-size: 1.8rem; }
+        .note-info h3 { font-size: 1rem; font-weight: 700; }
+        .note-info p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .badge {
+            margin-left: auto;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge.html { background: #f5f3ff; color: var(--accent5); border: 1px solid #ddd6fe; }
+        .badge.md { background: #ecfdf5; color: var(--accent2); border: 1px solid #a7f3d0; }
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 DSA Notes</h1>
+            <p>Striver A2Z DSA — FAANG/MAANG Interview Prep</p>
+        </div>
+
+        <div class="section-title">📘 Striver Notes (Visual)</div>
+        <ul class="note-list">
+            <li>
+                <a href="./striver-notes/time-space-complexity.html">
+                    <span class="note-icon">⏱️</span>
+                    <div class="note-info">
+                        <h3>Time & Space Complexity</h3>
+                        <p>Big O, rules, 10⁸ trick, patterns</p>
+                    </div>
+                    <span class="badge html">HTML</span>
+                </a>
+            </li>
+            <li>
+                <a href="./dsa-notes/cpp-basics.html">
+                    <span class="note-icon">🏗️</span>
+                    <div class="note-info">
+                        <h3>C++ Basics for DSA</h3>
+                        <p>Data types, loops, functions, pass by ref</p>
+                    </div>
+                    <span class="badge html">HTML</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="section-title">📝 Markdown Notes (Quick Read)</div>
+        <ul class="note-list">
+            <li>
+                <a href="./striver-notes/time-space-complexity.md">
+                    <span class="note-icon">⏱️</span>
+                    <div class="note-info">
+                        <h3>Time & Space Complexity</h3>
+                        <p>Markdown version — GitHub readable</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+            <li>
+                <a href="./dsa-notes/cpp-basics.md">
+                    <span class="note-icon">🏗️</span>
+                    <div class="note-info">
+                        <h3>C++ Basics for DSA</h3>
+                        <p>Markdown version — GitHub readable</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="section-title">📂 DSA Topics (Coming Soon)</div>
+        <ul class="note-list">
+            <li>
+                <a href="./dsa-notes/arrays.md">
+                    <span class="note-icon">📦</span>
+                    <div class="note-info">
+                        <h3>Arrays & Hashing</h3>
+                        <p>Awaiting transcription</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+            <li>
+                <a href="./dsa-notes/linked-list.md">
+                    <span class="note-icon">🔗</span>
+                    <div class="note-info">
+                        <h3>Linked List</h3>
+                        <p>Awaiting transcription</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+            <li>
+                <a href="./dsa-notes/binary-search.md">
+                    <span class="note-icon">🔍</span>
+                    <div class="note-info">
+                        <h3>Binary Search</h3>
+                        <p>Awaiting transcription</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+            <li>
+                <a href="./dsa-notes/dynamic-programming.md">
+                    <span class="note-icon">🧩</span>
+                    <div class="note-info">
+                        <h3>Dynamic Programming</h3>
+                        <p>Awaiting transcription</p>
+                    </div>
+                    <span class="badge md">MD</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="footer">
+            Built for mastery. One topic at a time. 💪
+        </div>
+    </div>
+</body>
+</html>
