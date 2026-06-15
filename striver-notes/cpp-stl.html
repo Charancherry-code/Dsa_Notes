@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ STL — Striver A2Z DSA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #faf8f5;
+            --surface: #ffffff;
+            --card-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --card-hover: 0 12px 40px rgba(0,0,0,0.1);
+            --accent1: #e63946;
+            --accent2: #2a9d8f;
+            --accent3: #457b9d;
+            --accent4: #e9a820;
+            --accent5: #7c3aed;
+            --accent6: #db2777;
+            --accent7: #059669;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --code-bg: #1e293b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 0% 0%, rgba(122,58,237,0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, rgba(42,157,143,0.03) 0%, transparent 50%);
+            z-index: 0;
+        }
+        .container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+
+        /* HEADER */
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, var(--accent5), var(--accent3), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header .sub { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--text-muted); margin-top: 6px; }
+        .header .tags { margin-top: 14px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+
+        /* GRID */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+        /* CARDS */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--card-hover); }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; }
+        .card.c1::before { background: linear-gradient(90deg, var(--accent1), var(--accent6)); }
+        .card.c2::before { background: linear-gradient(90deg, var(--accent2), var(--accent7)); }
+        .card.c3::before { background: linear-gradient(90deg, var(--accent3), var(--accent5)); }
+        .card.c4::before { background: linear-gradient(90deg, var(--accent4), var(--accent1)); }
+        .card.c5::before { background: linear-gradient(90deg, var(--accent5), var(--accent3)); }
+        .card.c6::before { background: linear-gradient(90deg, var(--accent6), var(--accent4)); }
+        .card.c7::before { background: linear-gradient(90deg, var(--accent7), var(--accent2)); }
+        .card.span2 { grid-column: span 2; }
+        .card.span3 { grid-column: 1 / -1; }
+
+        .card-icon { font-size: 2rem; margin-bottom: 6px; display: block; }
+        .card h2 { font-family: 'Permanent Marker', cursive; font-size: 1.4rem; margin-bottom: 12px; letter-spacing: 1px; }
+        .card.c1 h2 { color: var(--accent1); }
+        .card.c2 h2 { color: var(--accent2); }
+        .card.c3 h2 { color: var(--accent3); }
+        .card.c4 h2 { color: var(--accent4); }
+        .card.c5 h2 { color: var(--accent5); }
+        .card.c6 h2 { color: var(--accent6); }
+        .card.c7 h2 { color: var(--accent7); }
+
+        pre { background: var(--code-bg); border-radius: 12px; padding: 14px 16px; font-family: 'Fira Code', monospace; font-size: 0.74rem; line-height: 1.7; overflow-x: auto; margin: 8px 0; color: #e2e8f0; }
+        code { font-family: 'Fira Code', monospace; background: #f1f5f9; padding: 2px 7px; border-radius: 5px; font-size: 0.76rem; color: var(--accent5); }
+        .kw { color: #c084fc; font-weight: 500; }
+        .fn { color: #67e8f9; }
+        .str { color: #6ee7b7; }
+        .cm { color: #94a3b8; font-style: italic; }
+        .num { color: #fbbf24; }
+        .type { color: #f472b6; }
+
+        .tag { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin: 3px 2px; }
+        .tag.t-red { background: #fef2f2; color: var(--accent1); border: 1px solid #fecaca; }
+        .tag.t-green { background: #ecfdf5; color: var(--accent7); border: 1px solid #a7f3d0; }
+        .tag.t-blue { background: #eff6ff; color: var(--accent3); border: 1px solid #bfdbfe; }
+        .tag.t-yellow { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .tag.t-purple { background: #f5f3ff; color: var(--accent5); border: 1px solid #ddd6fe; }
+        .tag.t-pink { background: #fdf2f8; color: var(--accent6); border: 1px solid #fbcfe8; }
+
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 8px; border-radius: 12px; overflow: hidden; font-size: 0.76rem; border: 1px solid var(--border); }
+        .data-table th { background: #f8fafc; color: var(--text); padding: 8px 10px; text-align: left; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+        .data-table td { padding: 7px 10px; border-bottom: 1px solid #f1f5f9; }
+        .data-table tr:hover td { background: #f8fafc; }
+
+        .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 10px 14px; margin-top: 10px; font-size: 0.8rem; display: flex; align-items: flex-start; gap: 8px; }
+        .warn-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 10px 14px; margin-top: 10px; font-size: 0.8rem; display: flex; align-items: flex-start; gap: 8px; color: var(--accent1); }
+        .handwritten { font-family: 'Caveat', cursive; font-size: 1.1rem; color: var(--accent5); }
+
+        .protip { background: linear-gradient(135deg, #f5f3ff, #eff6ff, #ecfdf5); border: 2px solid #ddd6fe; border-radius: 20px; padding: 28px; text-align: center; }
+        .protip h2 { font-family: 'Permanent Marker', cursive; font-size: 1.6rem; color: var(--accent5); }
+        .protip p { font-family: 'Caveat', cursive; font-size: 1.3rem; color: var(--text); margin-top: 8px; }
+
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } .card.span3 { grid-column: span 2; } .header h1 { font-size: 2.4rem; } }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .card.span2, .card.span3 { grid-column: span 1; } .header h1 { font-size: 1.8rem; } .container { padding: 20px 12px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>C++ STL</h1>
+        <div class="sub">Standard Template Library — Everything You Need for DSA 🧰</div>
+        <div class="tags">
+            <span class="tag t-purple">Containers</span>
+            <span class="tag t-green">Algorithms</span>
+            <span class="tag t-blue">Iterators</span>
+            <span class="tag t-red">Must Know</span>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <!-- PAIRS -->
+        <div class="card c5">
+            <span class="card-icon">👫</span>
+            <h2>Pairs</h2>
+<pre><span class="type">pair</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; p = {<span class="num">1</span>, <span class="num">3</span>};
+
+p.<span class="fn">first</span>   <span class="cm">// → 1</span>
+p.<span class="fn">second</span>  <span class="cm">// → 3</span>
+
+<span class="cm">// Nested: store 3 values</span>
+<span class="type">pair</span>&lt;<span class="type">int</span>, <span class="type">pair</span>&lt;<span class="type">int</span>,<span class="type">int</span>&gt;&gt; p = {<span class="num">1</span>, {<span class="num">3</span>,<span class="num">4</span>}};
+p.<span class="fn">second</span>.<span class="fn">first</span>  <span class="cm">// → 3</span>
+p.<span class="fn">second</span>.<span class="fn">second</span> <span class="cm">// → 4</span></pre>
+            <div class="handwritten">Pair = store 2 things together 🤝</div>
+        </div>
+
+        <!-- VECTOR -->
+        <div class="card c2 span2">
+            <span class="card-icon">📦</span>
+            <h2>Vector — Dynamic Array</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                    <span class="tag t-green">Declare & Insert</span>
+<pre><span class="type">vector</span>&lt;<span class="type">int</span>&gt; v;
+v.<span class="fn">push_back</span>(<span class="num">1</span>);
+v.<span class="fn">emplace_back</span>(<span class="num">2</span>); <span class="cm">// faster!</span>
+
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt; v(<span class="num">5</span>, <span class="num">100</span>);
+<span class="cm">// {100,100,100,100,100}</span>
+
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt; v2(v); <span class="cm">// copy</span></pre>
+                </div>
+                <div>
+                    <span class="tag t-blue">Access & Delete</span>
+<pre>v[<span class="num">0</span>]       <span class="cm">// first element</span>
+v.<span class="fn">back</span>()   <span class="cm">// last element</span>
+v.<span class="fn">size</span>()   <span class="cm">// count</span>
+v.<span class="fn">pop_back</span>() <span class="cm">// remove last</span>
+v.<span class="fn">clear</span>()  <span class="cm">// remove all</span>
+v.<span class="fn">empty</span>()  <span class="cm">// is empty?</span>
+
+v.<span class="fn">erase</span>(v.<span class="fn">begin</span>()+<span class="num">1</span>);
+<span class="cm">// deletes index 1</span></pre>
+                </div>
+            </div>
+            <div class="tip-box">
+                <span>⚡</span>
+                <span><code>emplace_back</code> > <code>push_back</code> — constructs in-place, no copy overhead</span>
+            </div>
+        </div>
+
+        <!-- ITERATORS -->
+        <div class="card c3 span2">
+            <span class="card-icon">👆</span>
+            <h2>Iterators</h2>
+            <p style="font-size:0.85rem; margin-bottom:8px;">Points to <strong>memory address</strong> of element. Use <code>*it</code> to get value.</p>
+<pre><span class="kw">auto</span> it = v.<span class="fn">begin</span>();  <span class="cm">// points to first</span>
+*it                    <span class="cm">// → value at that address</span>
+it++                   <span class="cm">// move to next element</span>
+
+v.<span class="fn">begin</span>()  <span class="cm">// → first element</span>
+v.<span class="fn">end</span>()    <span class="cm">// → AFTER last (not last!)</span></pre>
+            <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+                <span class="tag t-green">begin → first</span>
+                <span class="tag t-red">end → after last</span>
+                <span class="tag t-purple">*it → get value</span>
+                <span class="tag t-yellow">it++ → next</span>
+            </div>
+            <div class="handwritten" style="margin-top:8px;">auto = compiler figures out the data type for you 🪄</div>
+        </div>
+
+        <!-- PRINT VECTOR -->
+        <div class="card c4">
+            <span class="card-icon">🖨️</span>
+            <h2>Print Vector</h2>
+<pre><span class="cm">// ① Index loop</span>
+<span class="kw">for</span>(<span class="type">int</span> i=<span class="num">0</span>; i&lt;v.<span class="fn">size</span>(); i++)
+    cout &lt;&lt; v[i];
+
+<span class="cm">// ② Iterator</span>
+<span class="kw">for</span>(<span class="kw">auto</span> it=v.<span class="fn">begin</span>(); it!=v.<span class="fn">end</span>(); it++)
+    cout &lt;&lt; *it;
+
+<span class="cm">// ③ For-each (cleanest ✨)</span>
+<span class="kw">for</span>(<span class="kw">auto</span> x : v)
+    cout &lt;&lt; x;</pre>
+        </div>
+
+        <!-- STACK -->
+        <div class="card c1">
+            <span class="card-icon">📚</span>
+            <h2>Stack — LIFO</h2>
+<pre><span class="type">stack</span>&lt;<span class="type">int</span>&gt; st;
+st.<span class="fn">push</span>(<span class="num">1</span>);  st.<span class="fn">push</span>(<span class="num">2</span>);  st.<span class="fn">push</span>(<span class="num">3</span>);
+
+st.<span class="fn">top</span>()   <span class="cm">// → 3 (peek)</span>
+st.<span class="fn">pop</span>()   <span class="cm">// removes 3</span>
+st.<span class="fn">top</span>()   <span class="cm">// → 2 now</span>
+st.<span class="fn">size</span>()  <span class="cm">// → 2</span></pre>
+            <div style="margin-top:8px;">
+                <span class="tag t-red">Last In First Out</span>
+                <span class="tag t-green">All O(1)</span>
+            </div>
+            <div class="warn-box"><span>❌</span><span>No indexing! Only top/push/pop</span></div>
+        </div>
+
+        <!-- QUEUE -->
+        <div class="card c7">
+            <span class="card-icon">🚶</span>
+            <h2>Queue — FIFO</h2>
+<pre><span class="type">queue</span>&lt;<span class="type">int</span>&gt; q;
+q.<span class="fn">push</span>(<span class="num">1</span>);  q.<span class="fn">push</span>(<span class="num">2</span>);  q.<span class="fn">push</span>(<span class="num">4</span>);
+
+q.<span class="fn">front</span>()  <span class="cm">// → 1</span>
+q.<span class="fn">back</span>()   <span class="cm">// → 4</span>
+q.<span class="fn">pop</span>()    <span class="cm">// removes front (1)</span>
+q.<span class="fn">front</span>()  <span class="cm">// → 2 now</span></pre>
+            <div style="margin-top:8px;">
+                <span class="tag t-blue">First In First Out</span>
+                <span class="tag t-green">All O(1)</span>
+            </div>
+        </div>
+
+        <!-- PRIORITY QUEUE -->
+        <div class="card c4">
+            <span class="card-icon">⛰️</span>
+            <h2>Priority Queue</h2>
+<pre><span class="cm">// Max Heap (default)</span>
+<span class="type">priority_queue</span>&lt;<span class="type">int</span>&gt; pq;
+pq.<span class="fn">push</span>(<span class="num">5</span>); pq.<span class="fn">push</span>(<span class="num">2</span>); pq.<span class="fn">push</span>(<span class="num">10</span>);
+pq.<span class="fn">top</span>()  <span class="cm">// → 10 (largest)</span>
+
+<span class="cm">// Min Heap</span>
+<span class="type">priority_queue</span>&lt;<span class="type">int</span>,<span class="type">vector</span>&lt;<span class="type">int</span>&gt;,
+    <span class="type">greater</span>&lt;<span class="type">int</span>&gt;&gt; pq;
+pq.<span class="fn">top</span>()  <span class="cm">// → smallest</span></pre>
+            <table class="data-table">
+                <tr><th>Op</th><th>Time</th></tr>
+                <tr><td>push</td><td>O(log N)</td></tr>
+                <tr><td>top</td><td>O(1)</td></tr>
+                <tr><td>pop</td><td>O(log N)</td></tr>
+            </table>
+        </div>
+
+        <!-- SET -->
+        <div class="card c6 span2">
+            <span class="card-icon">🎯</span>
+            <h2>Set — Sorted + Unique</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+<pre><span class="type">set</span>&lt;<span class="type">int</span>&gt; s;
+s.<span class="fn">insert</span>(<span class="num">1</span>);  <span class="cm">// {1}</span>
+s.<span class="fn">insert</span>(<span class="num">4</span>);  <span class="cm">// {1,4}</span>
+s.<span class="fn">insert</span>(<span class="num">2</span>);  <span class="cm">// {1,2,4} auto sorted!</span>
+s.<span class="fn">insert</span>(<span class="num">2</span>);  <span class="cm">// {1,2,4} dup ignored!</span>
+
+s.<span class="fn">find</span>(<span class="num">3</span>)    <span class="cm">// → s.end() (not found)</span>
+s.<span class="fn">find</span>(<span class="num">2</span>)    <span class="cm">// → iterator to 2</span>
+s.<span class="fn">count</span>(<span class="num">2</span>)   <span class="cm">// → 1 (exists)</span>
+s.<span class="fn">erase</span>(<span class="num">2</span>)   <span class="cm">// removes 2</span></pre>
+                </div>
+                <div>
+                    <table class="data-table">
+                        <tr><th>Variant</th><th>Sorted</th><th>Unique</th><th>Time</th></tr>
+                        <tr><td><strong>set</strong></td><td>✅</td><td>✅</td><td>O(log N)</td></tr>
+                        <tr><td><strong>multiset</strong></td><td>✅</td><td>❌</td><td>O(log N)</td></tr>
+                        <tr><td><strong>unordered_set</strong></td><td>❌</td><td>✅</td><td>O(1) avg</td></tr>
+                    </table>
+                    <div class="tip-box" style="margin-top:8px;">
+                        <span>💡</span>
+                        <span><strong>multiset:</strong> erase(element) removes ALL. Use erase(find(x)) to remove ONE.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAP -->
+        <div class="card c3 span2">
+            <span class="card-icon">🗺️</span>
+            <h2>Map — Key:Value Pairs</h2>
+            <p style="font-size:0.85rem; margin-bottom:8px;">Keys are <strong>sorted & unique</strong>. Think: roll number → name.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+<pre><span class="type">map</span>&lt;<span class="type">int</span>, <span class="type">int</span>&gt; mp;
+mp[<span class="num">1</span>] = <span class="num">2</span>;            <span class="cm">// key:1 val:2</span>
+mp.<span class="fn">emplace</span>(<span class="num">3</span>, <span class="num">1</span>);     <span class="cm">// key:3 val:1</span>
+mp.<span class="fn">insert</span>({<span class="num">2</span>, <span class="num">4</span>});    <span class="cm">// key:2 val:4</span>
+<span class="cm">// stored: {1:2, 2:4, 3:1}</span>
+
+mp[<span class="num">1</span>]      <span class="cm">// → 2</span>
+mp[<span class="num">5</span>]      <span class="cm">// → 0 (doesn't exist)</span>
+mp.<span class="fn">find</span>(<span class="num">3</span>) <span class="cm">// → iterator to {3,1}</span></pre>
+                </div>
+                <div>
+<pre><span class="cm">// Iterate</span>
+<span class="kw">for</span>(<span class="kw">auto</span> it : mp) {
+    cout &lt;&lt; it.first &lt;&lt; <span class="str">" "</span>
+         &lt;&lt; it.second;
+}
+<span class="cm">// prints in sorted key order!</span></pre>
+                    <table class="data-table">
+                        <tr><th>Variant</th><th>Keys</th><th>Time</th></tr>
+                        <tr><td><strong>map</strong></td><td>sorted unique</td><td>O(log N)</td></tr>
+                        <tr><td><strong>multimap</strong></td><td>sorted dups</td><td>O(log N)</td></tr>
+                        <tr><td><strong>unordered_map</strong></td><td>unique O(1)</td><td>O(1) avg</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SORT -->
+        <div class="card c1">
+            <span class="card-icon">🔃</span>
+            <h2>Sort</h2>
+<pre><span class="fn">sort</span>(a, a+n);           <span class="cm">// ascending</span>
+<span class="fn">sort</span>(v.<span class="fn">begin</span>(), v.<span class="fn">end</span>());
+
+<span class="cm">// Descending</span>
+<span class="fn">sort</span>(a, a+n, <span class="type">greater</span>&lt;<span class="type">int</span>&gt;());
+
+<span class="cm">// Partial sort</span>
+<span class="fn">sort</span>(a+<span class="num">2</span>, a+<span class="num">4</span>);
+<span class="cm">// only sorts index [2,4)</span></pre>
+            <div class="handwritten">O(N log N) — one line replaces bubble/selection sort!</div>
+        </div>
+
+        <!-- CUSTOM COMPARATOR -->
+        <div class="card c5 span2">
+            <span class="card-icon">⚙️</span>
+            <h2>Custom Comparator</h2>
+            <p style="font-size:0.82rem; margin-bottom:6px;">Sort YOUR way — "Is p1 before p2 correct? return true/false"</p>
+<pre><span class="type">bool</span> <span class="fn">comp</span>(<span class="type">pair</span>&lt;<span class="type">int</span>,<span class="type">int</span>&gt; p1, <span class="type">pair</span>&lt;<span class="type">int</span>,<span class="type">int</span>&gt; p2) {
+    <span class="kw">if</span>(p1.second &lt; p2.second) <span class="kw">return true</span>;   <span class="cm">// sort by second ↑</span>
+    <span class="kw">if</span>(p1.second &gt; p2.second) <span class="kw">return false</span>;
+    <span class="cm">// if second same → sort by first descending</span>
+    <span class="kw">return</span> p1.first &gt; p2.first;
+}
+
+<span class="fn">sort</span>(arr, arr+n, comp);  <span class="cm">// pass as 3rd argument</span></pre>
+            <div class="tip-box">
+                <span>💡</span>
+                <span><strong>Trick:</strong> Think of only 2 elements. "Should p1 come before p2?" If yes → true. If no → false. That's it.</span>
+            </div>
+        </div>
+
+        <!-- OTHER ALGORITHMS -->
+        <div class="card c7">
+            <span class="card-icon">🧮</span>
+            <h2>Other Algos</h2>
+<pre><span class="cm">// Count set bits</span>
+<span class="fn">__builtin_popcount</span>(<span class="num">7</span>);  <span class="cm">// → 3</span>
+<span class="fn">__builtin_popcountll</span>(n); <span class="cm">// long long</span>
+
+<span class="cm">// Next permutation</span>
+<span class="fn">next_permutation</span>(s.<span class="fn">begin</span>(), s.<span class="fn">end</span>());
+<span class="cm">// ⚠️ start from sorted!</span>
+
+<span class="cm">// Max/Min element</span>
+*<span class="fn">max_element</span>(a, a+n);
+*<span class="fn">min_element</span>(a, a+n);</pre>
+        </div>
+
+        <!-- MASTER TABLE -->
+        <div class="card c3 span3">
+            <span class="card-icon">📋</span>
+            <h2>Master Cheat Table</h2>
+            <table class="data-table">
+                <tr><th>Container</th><th>Key Property</th><th>Insert/Access</th><th>Use When</th></tr>
+                <tr><td><code>vector</code></td><td>dynamic array</td><td>O(1) back, O(1) access</td><td>default go-to</td></tr>
+                <tr><td><code>list</code></td><td>doubly linked</td><td>O(1) front & back</td><td>need push_front</td></tr>
+                <tr><td><code>stack</code></td><td>LIFO</td><td>O(1) all</td><td>undo, matching brackets</td></tr>
+                <tr><td><code>queue</code></td><td>FIFO</td><td>O(1) all</td><td>BFS, scheduling</td></tr>
+                <tr><td><code>priority_queue</code></td><td>max/min on top</td><td>O(log N) push/pop</td><td>top-K, Dijkstra</td></tr>
+                <tr><td><code>set</code></td><td>sorted + unique</td><td>O(log N) all</td><td>unique sorted elements</td></tr>
+                <tr><td><code>unordered_set</code></td><td>unique + fast</td><td>O(1) avg</td><td>fast lookup</td></tr>
+                <tr><td><code>map</code></td><td>sorted key:value</td><td>O(log N) all</td><td>frequency, mapping</td></tr>
+                <tr><td><code>unordered_map</code></td><td>key:value + fast</td><td>O(1) avg</td><td>fast frequency count</td></tr>
+            </table>
+        </div>
+
+        <!-- PRO TIP -->
+        <div class="card protip">
+            <h2>⭐ Interview Tip</h2>
+            <p>unordered_map for frequency counting. set for unique sorted. priority_queue for top-K. Master these 3 = solve 60% of problems.</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
