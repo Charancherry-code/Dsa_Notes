@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursion Intro — Striver A2Z DSA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#faf8f5;--surface:#fff;--shadow:0 4px 24px rgba(0,0,0,0.06);--hover:0 12px 40px rgba(0,0,0,0.1);--accent1:#e63946;--accent2:#2a9d8f;--accent3:#457b9d;--accent4:#e9a820;--accent5:#7c3aed;--accent6:#db2777;--accent7:#059669;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--code-bg:#1e293b;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 0% 0%,rgba(122,58,237,0.03) 0%,transparent 50%),radial-gradient(ellipse at 100% 100%,rgba(42,157,143,0.03) 0%,transparent 50%);z-index:0;}
+        .container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24px;}
+        .header{text-align:center;margin-bottom:50px;}
+        .header h1{font-family:'Permanent Marker',cursive;font-size:3.2rem;background:linear-gradient(135deg,var(--accent2),var(--accent5),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .header .sub{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--muted);margin-top:6px;}
+        .header .tags{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:all 0.35s cubic-bezier(0.4,0,0.2,1);}
+        .card:hover{transform:translateY(-4px);box-shadow:var(--hover);}
+        .card::before{content:'';position:absolute;top:0;left:0;width:100%;height:5px;}
+        .card.c1::before{background:linear-gradient(90deg,var(--accent1),var(--accent6));}.card.c2::before{background:linear-gradient(90deg,var(--accent2),var(--accent7));}.card.c3::before{background:linear-gradient(90deg,var(--accent3),var(--accent5));}.card.c4::before{background:linear-gradient(90deg,var(--accent4),var(--accent1));}.card.c5::before{background:linear-gradient(90deg,var(--accent5),var(--accent3));}.card.c6::before{background:linear-gradient(90deg,var(--accent6),var(--accent4));}.card.c7::before{background:linear-gradient(90deg,var(--accent7),var(--accent2));}
+        .card.span2{grid-column:span 2;}.card.span3{grid-column:1/-1;}
+        .card-icon{font-size:2rem;margin-bottom:6px;display:block;}
+        .card h2{font-family:'Permanent Marker',cursive;font-size:1.4rem;margin-bottom:12px;letter-spacing:1px;}
+        .card.c1 h2{color:var(--accent1);}.card.c2 h2{color:var(--accent2);}.card.c3 h2{color:var(--accent3);}.card.c4 h2{color:var(--accent4);}.card.c5 h2{color:var(--accent5);}.card.c6 h2{color:var(--accent6);}.card.c7 h2{color:var(--accent7);}
+        pre{background:var(--code-bg);border-radius:12px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:0.74rem;line-height:1.7;overflow-x:auto;margin:8px 0;color:#e2e8f0;}
+        code{font-family:'Fira Code',monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px;font-size:0.76rem;color:var(--accent5);}
+        .kw{color:#c084fc;font-weight:500;}.fn{color:#67e8f9;}.cm{color:#94a3b8;font-style:italic;}.num{color:#fbbf24;}.type{color:#f472b6;}
+        .tag{display:inline-block;padding:4px 12px;border-radius:8px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:3px 2px;}
+        .tag.t-red{background:#fef2f2;color:var(--accent1);border:1px solid #fecaca;}.tag.t-green{background:#ecfdf5;color:var(--accent7);border:1px solid #a7f3d0;}.tag.t-blue{background:#eff6ff;color:var(--accent3);border:1px solid #bfdbfe;}.tag.t-yellow{background:#fffbeb;color:#b45309;border:1px solid #fde68a;}.tag.t-purple{background:#f5f3ff;color:var(--accent5);border:1px solid #ddd6fe;}.tag.t-pink{background:#fdf2f8;color:var(--accent6);border:1px solid #fbcfe8;}
+        .data-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:8px;border-radius:12px;overflow:hidden;font-size:0.76rem;border:1px solid var(--border);}
+        .data-table th{background:#f8fafc;color:var(--text);padding:8px 10px;text-align:left;font-weight:700;text-transform:uppercase;font-size:0.65rem;letter-spacing:0.5px;border-bottom:2px solid var(--border);}
+        .data-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;}
+        .data-table tr:hover td{background:#f8fafc;}
+        .tip-box{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:0.8rem;display:flex;align-items:flex-start;gap:8px;}
+        .warn-box{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:0.8rem;display:flex;align-items:flex-start;gap:8px;color:var(--accent1);}
+        .handwritten{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--accent5);}
+        .protip{background:linear-gradient(135deg,#f5f3ff,#eff6ff,#ecfdf5);border:2px solid #ddd6fe;border-radius:20px;padding:28px;text-align:center;}
+        .protip h2{font-family:'Permanent Marker',cursive;font-size:1.6rem;color:var(--accent5);}.protip p{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--text);margin-top:8px;}
+        @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;}.card.span3{grid-column:span 2;}}
+        @media(max-width:600px){.grid{grid-template-columns:1fr;}.card.span2,.card.span3{grid-column:span 1;}.header h1{font-size:1.8rem;}.container{padding:20px 12px;}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Introduction to Recursion</h1>
+        <div class="sub">Striver A2Z — Recursion Tree, Stack Space & Base Case 🔄</div>
+        <div class="tags"><span class="tag t-purple">Recursion</span><span class="tag t-red">Must Know</span><span class="tag t-green">Stack</span><span class="tag t-yellow">Foundation</span></div>
+    </div>
+    <div class="grid">
+
+        <!-- WHAT IS RECURSION -->
+        <div class="card c5 span2">
+            <span class="card-icon">🧠</span>
+            <h2>What is Recursion?</h2>
+            <p style="font-size:0.95rem;margin-bottom:10px;"><strong>A function that calls itself until a base condition is met.</strong></p>
+<pre><span class="kw">void</span> <span class="fn">f</span>() {
+    <span class="cm">// 1. Base case — STOP</span>
+    <span class="cm">// 2. Do some work</span>
+    <span class="cm">// 3. Call itself with smaller input</span>
+    <span class="fn">f</span>();
+}</pre>
+            <div style="margin-top:10px;font-size:0.85rem;line-height:1.9;">
+                <strong>3 things to identify:</strong><br>
+                1️⃣ <strong>Base case</strong> — when to STOP<br>
+                2️⃣ <strong>Work</strong> — what happens each call<br>
+                3️⃣ <strong>Recursive call</strong> — function calling itself with changed input
+            </div>
+        </div>
+
+        <!-- BASE CASE -->
+        <div class="card c1">
+            <span class="card-icon">🛑</span>
+            <h2>Base Case</h2>
+            <p style="font-size:0.82rem;margin-bottom:6px;">The condition where you <strong>STOP</strong> calling further.</p>
+<pre><span class="kw">void</span> <span class="fn">f</span>(<span class="type">int</span> count) {
+    <span class="kw">if</span>(count == <span class="num">3</span>) <span class="kw">return</span>; <span class="cm">// 🛑 STOP!</span>
+    cout &lt;&lt; count;
+    <span class="fn">f</span>(count + <span class="num">1</span>);
+}
+<span class="cm">// f(0) → prints: 0 1 2</span></pre>
+            <div class="warn-box"><span>❌</span><span>No base case = infinite recursion = CRASH</span></div>
+        </div>
+
+        <!-- STACK SPACE -->
+        <div class="card c3 span2">
+            <span class="card-icon">📚</span>
+            <h2>Stack Space (Call Stack)</h2>
+            <p style="font-size:0.85rem;margin-bottom:8px;">Every unfinished function call <strong>waits in the stack</strong> until the one it called returns.</p>
+<pre>┌───────────────┐
+│   f(3)        │ ← hits base case → RETURNS ↩️
+├───────────────┤
+│   f(2)        │ ← waiting... now resumes → RETURNS ↩️
+├───────────────┤
+│   f(1)        │ ← waiting... now resumes → RETURNS ↩️
+├───────────────┤
+│   f(0)        │ ← waiting... now resumes → RETURNS ↩️
+├───────────────┤
+│   main()      │ ← done!
+└───────────────┘</pre>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+                <span class="tag t-blue">Each call PUSHES to stack</span>
+                <span class="tag t-green">Return = POPS from stack</span>
+                <span class="tag t-purple">Space = O(depth)</span>
+            </div>
+        </div>
+
+        <!-- STACK OVERFLOW -->
+        <div class="card c6">
+            <span class="card-icon">💥</span>
+            <h2>Stack Overflow</h2>
+<pre><span class="kw">void</span> <span class="fn">f</span>() {
+    cout &lt;&lt; <span class="num">1</span>;
+    <span class="fn">f</span>(); <span class="cm">// ❌ no base case!</span>
+}
+<span class="cm">// Prints 1 forever → SEGFAULT</span></pre>
+            <p style="font-size:0.82rem;margin-top:8px;">Stack fills up → no more memory → <strong>crash</strong></p>
+            <div class="handwritten" style="margin-top:6px;">Too many calls waiting = overflow 💀</div>
+        </div>
+
+        <!-- RECURSION TREE -->
+        <div class="card c4 span2">
+            <span class="card-icon">🌳</span>
+            <h2>Recursion Tree</h2>
+            <p style="font-size:0.85rem;margin-bottom:8px;">Visual shorthand for how calls branch + return.</p>
+<pre><span class="fn">f</span>(<span class="num">0</span>) ──→ <span class="fn">f</span>(<span class="num">1</span>) ──→ <span class="fn">f</span>(<span class="num">2</span>) ──→ <span class="fn">f</span>(<span class="num">3</span>) 🛑 BASE → <span class="kw">return</span>
+                                        ↩️ back to f(2)
+                                 ↩️ back to f(1)
+                          ↩️ back to f(0)
+                   ↩️ back to main</pre>
+            <div class="tip-box"><span>💡</span><span>Draw this for EVERY recursion problem. It makes the logic click instantly.</span></div>
+        </div>
+
+        <!-- TC / SC -->
+        <div class="card c7">
+            <span class="card-icon">⏱️</span>
+            <h2>Complexity</h2>
+            <table class="data-table">
+                <tr><th>Aspect</th><th>Value</th></tr>
+                <tr><td><strong>Time</strong></td><td>O(number of calls)</td></tr>
+                <tr><td><strong>Space</strong></td><td>O(depth) — stack</td></tr>
+            </table>
+            <div style="margin-top:10px;font-size:0.8rem;">
+                Print 0 to N:<br>
+                • N+1 calls → <strong>TC: O(N)</strong><br>
+                • N+1 in stack → <strong>SC: O(N)</strong>
+            </div>
+        </div>
+
+        <!-- PATTERNS -->
+        <div class="card c2 span2">
+            <span class="card-icon">🎯</span>
+            <h2>Patterns — When Recursion?</h2>
+            <table class="data-table">
+                <tr><th>Problem says...</th><th>Think</th></tr>
+                <tr><td>"do something N times"</td><td>f(i) → f(i+1)</td></tr>
+                <tr><td>"break into subproblems"</td><td>classic recursion</td></tr>
+                <tr><td>"tree/graph traversal"</td><td>DFS = recursion</td></tr>
+                <tr><td>"all subsets/permutations"</td><td>backtracking</td></tr>
+                <tr><td>"try all possibilities"</td><td>recursion + prune</td></tr>
+                <tr><td>"divide & conquer"</td><td>merge sort, quick sort</td></tr>
+                <tr><td>"overlapping subproblems"</td><td>recursion + memo = DP</td></tr>
+            </table>
+        </div>
+
+        <!-- COMMON MISTAKES -->
+        <div class="card c1">
+            <span class="card-icon">❌</span>
+            <h2>Common Mistakes</h2>
+            <div style="font-size:0.78rem;line-height:1.8;">
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>No base case → stack overflow</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Base case never reached (params don't change)</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Using globals when params work better</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Forgetting SC = O(depth) — it uses memory!</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Tracing every call — trust the recursion</span></div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW QUESTIONS -->
+        <div class="card c5 span3">
+            <span class="card-icon">🏢</span>
+            <h2>FAANG Interview Questions</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px;">
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent2);">Print 1 to N</strong> <span class="tag t-green">Amazon</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="kw">void</span> <span class="fn">print</span>(<span class="type">int</span> i, <span class="type">int</span> n) {
+    <span class="kw">if</span>(i > n) <span class="kw">return</span>;
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+    <span class="fn">print</span>(i+<span class="num">1</span>, n);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent5);">Print N to 1</strong> <span class="tag t-purple">Microsoft</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="kw">void</span> <span class="fn">print</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span>;
+    cout &lt;&lt; n &lt;&lt; <span class="str">" "</span>;
+    <span class="fn">print</span>(n-<span class="num">1</span>);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent4);">Sum of N</strong> <span class="tag t-yellow">Google</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">sum</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">return</span> n + <span class="fn">sum</span>(n-<span class="num">1</span>);
+}
+<span class="cm">// sum(5) = 15</span></pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent1);">Factorial</strong> <span class="tag t-red">Everyone</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">fact</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n &lt;= <span class="num">1</span>) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="kw">return</span> n * <span class="fn">fact</span>(n-<span class="num">1</span>);
+}
+<span class="cm">// fact(5) = 120</span></pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent6);">Fibonacci</strong> <span class="tag t-pink">Amazon Meta</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">fib</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n &lt;= <span class="num">1</span>) <span class="kw">return</span> n;
+    <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>);
+}
+<span class="cm">// ⚠️ O(2^N)! Use DP.</span></pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent3);">Theory Qs</strong> <span class="tag t-blue">All Companies</span>
+                    <ul style="font-size:0.75rem;margin-top:6px;line-height:1.8;padding-left:14px;">
+                        <li>What is recursion? → fn calls itself</li>
+                        <li>No base case? → stack overflow</li>
+                        <li>Stack space? → O(depth)</li>
+                        <li>Recursion vs iteration? → recursion cleaner for trees, iteration for simple loops</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARAMETERISED vs FUNCTIONAL -->
+        <div class="card c3 span2">
+            <span class="card-icon">🎭</span>
+            <h2>Parameterised vs Functional</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <span class="tag t-blue">Parameterised — carry answer</span>
+<pre style="font-size:0.7rem;"><span class="kw">void</span> <span class="fn">f</span>(<span class="type">int</span> i, <span class="type">int</span> sum) {
+    <span class="kw">if</span>(i < <span class="num">1</span>) { cout &lt;&lt; sum; <span class="kw">return</span>; }
+    <span class="fn">f</span>(i-<span class="num">1</span>, sum + i);
+}
+<span class="cm">// f(3,0) → f(2,3) → f(1,5) → f(0,6) print!</span></pre>
+                    <p style="font-size:0.75rem;color:var(--muted);">Answer built in parameter → print at base</p>
+                </div>
+                <div>
+                    <span class="tag t-purple">Functional — return answer</span>
+<pre style="font-size:0.7rem;"><span class="type">int</span> <span class="fn">f</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">return</span> n + <span class="fn">f</span>(n-<span class="num">1</span>);
+}
+<span class="cm">// f(3) = 3+f(2) = 3+2+f(1) = 3+2+1+0 = 6</span></pre>
+                    <p style="font-size:0.75rem;color:var(--muted);">Break into current + f(smaller) → DP uses this!</p>
+                </div>
+            </div>
+            <div class="tip-box" style="margin-top:10px;"><span>⚡</span><span><strong>Functional = what DP is built on.</strong> Master this pattern now.</span></div>
+        </div>
+
+        <!-- BASE CASE FOR RETURN -->
+        <div class="card c4">
+            <span class="card-icon">🎯</span>
+            <h2>Base Case Returns</h2>
+            <table class="data-table">
+                <tr><th>Operation</th><th>Return at base</th></tr>
+                <tr><td>Sum (+)</td><td><strong>0</strong></td></tr>
+                <tr><td>Product (×)</td><td><strong>1</strong></td></tr>
+                <tr><td>Min</td><td>INT_MAX</td></tr>
+                <tr><td>Max</td><td>INT_MIN</td></tr>
+                <tr><td>Count</td><td>0</td></tr>
+            </table>
+            <div class="warn-box" style="margin-top:8px;"><span>⚠️</span><span>Factorial base = return <strong>1</strong> not 0! (0×anything=0)</span></div>
+        </div>
+
+        <!-- FACTORIAL -->
+        <div class="card c6">
+            <span class="card-icon">🔢</span>
+            <h2>Factorial (Functional)</h2>
+<pre style="font-size:0.72rem;"><span class="type">int</span> <span class="fn">factorial</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span> <span class="num">1</span>; <span class="cm">// ⚠️ NOT 0!</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n-<span class="num">1</span>);
+}
+<span class="cm">// 4! = 4×3×2×1×1 = 24</span></pre>
+            <div class="handwritten">Return 0 → everything × 0 = 0. Return 1!</div>
+        </div>
+
+        <!-- BACKTRACKING -->
+        <div class="card c4 span2">
+            <span class="card-icon">🔥</span>
+            <h2>Backtracking Concept</h2>
+            <p style="font-size:0.85rem;margin-bottom:8px;">Code <strong>before</strong> call = going deeper. Code <strong>after</strong> call = coming back.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <span class="tag t-green">Print BEFORE call (normal)</span>
+<pre style="font-size:0.72rem;"><span class="kw">void</span> <span class="fn">f</span>(<span class="type">int</span> i, <span class="type">int</span> n) {
+    <span class="kw">if</span>(i > n) <span class="kw">return</span>;
+    cout &lt;&lt; i;        <span class="cm">// ← print first</span>
+    <span class="fn">f</span>(i+<span class="num">1</span>, n);        <span class="cm">// then go deeper</span>
+}
+<span class="cm">// f(1,3) → 1 2 3</span></pre>
+                </div>
+                <div>
+                    <span class="tag t-purple">Print AFTER call (backtrack)</span>
+<pre style="font-size:0.72rem;"><span class="kw">void</span> <span class="fn">f</span>(<span class="type">int</span> i, <span class="type">int</span> n) {
+    <span class="kw">if</span>(i < <span class="num">1</span>) <span class="kw">return</span>;
+    <span class="fn">f</span>(i-<span class="num">1</span>, n);        <span class="cm">// go deep first</span>
+    cout &lt;&lt; i;        <span class="cm">// ← print on way BACK</span>
+}
+<span class="cm">// f(3,3) → 1 2 3 (started from 3!)</span></pre>
+                </div>
+            </div>
+            <div class="tip-box" style="margin-top:10px;">
+                <span>⚡</span>
+                <span><strong>Rule:</strong> Before call = going down. After call = coming back up. This is backtracking in its simplest form.</span>
+            </div>
+        </div>
+
+        <!-- PROBLEMS SUMMARY -->
+        <div class="card c7">
+            <span class="card-icon">📝</span>
+            <h2>Problems Solved</h2>
+            <table class="data-table">
+                <tr><th>Problem</th><th>Key Idea</th></tr>
+                <tr><td>Print name N times</td><td>f(i+1), print before</td></tr>
+                <tr><td>Print 1 to N</td><td>f(i+1), print i before</td></tr>
+                <tr><td>Print N to 1</td><td>f(i-1), print i before</td></tr>
+                <tr><td>1 to N (backtrack)</td><td>f(i-1), print AFTER</td></tr>
+                <tr><td>N to 1 (backtrack)</td><td>f(i+1), print AFTER</td></tr>
+                <tr><td>Sum of N (param)</td><td>carry sum, print at base</td></tr>
+                <tr><td>Sum of N (functional)</td><td>return n + f(n-1)</td></tr>
+                <tr><td>Factorial</td><td>return n * f(n-1), base=1</td></tr>
+            </table>
+            <div class="handwritten" style="margin-top:8px;">All TC: O(N) | SC: O(N) stack</div>
+        </div>
+
+        <!-- INTERVIEW QUESTIONS -->
+        <div class="card c5 span3">
+            <span class="card-icon">🏢</span>
+            <h2>FAANG Interview Questions</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:8px;">
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent2);">Print 1 to N</strong> <span class="tag t-green">Amazon</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="kw">void</span> <span class="fn">print</span>(<span class="type">int</span> i, <span class="type">int</span> n) {
+    <span class="kw">if</span>(i > n) <span class="kw">return</span>;
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+    <span class="fn">print</span>(i+<span class="num">1</span>, n);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent5);">Print N to 1</strong> <span class="tag t-purple">Microsoft</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="kw">void</span> <span class="fn">print</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span>;
+    cout &lt;&lt; n &lt;&lt; <span class="str">" "</span>;
+    <span class="fn">print</span>(n-<span class="num">1</span>);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent4);">Sum of N</strong> <span class="tag t-yellow">Google</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">sum</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n == <span class="num">0</span>) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">return</span> n + <span class="fn">sum</span>(n-<span class="num">1</span>);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent1);">Factorial</strong> <span class="tag t-red">Everyone</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">fact</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n &lt;= <span class="num">1</span>) <span class="kw">return</span> <span class="num">1</span>;
+    <span class="kw">return</span> n * <span class="fn">fact</span>(n-<span class="num">1</span>);
+}</pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent6);">Fibonacci</strong> <span class="tag t-pink">Amazon Meta</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">fib</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span>(n &lt;= <span class="num">1</span>) <span class="kw">return</span> n;
+    <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="num">1</span>) + <span class="fn">fib</span>(n-<span class="num">2</span>);
+}
+<span class="cm">// ⚠️ O(2^N) — use DP!</span></pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent3);">Interview Theory</strong> <span class="tag t-blue">All</span>
+                    <ul style="font-size:0.72rem;margin-top:6px;line-height:1.8;padding-left:14px;">
+                        <li>Before vs after call? → down vs backtrack</li>
+                        <li>N=10⁶ recursion? → stack overflow risk</li>
+                        <li>Convert to iteration? → yes, always possible</li>
+                        <li>TC/SC? → O(N) time, O(N) stack space</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROTIP -->
+        <div class="card protip">
+            <h2>⭐ Golden Rule</h2>
+            <p>Trust the recursion. If f(smaller) gives the correct answer, just build on top of it. Don't trace every single call — think in terms of "what does this ONE call do?"</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

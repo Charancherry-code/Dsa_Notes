@@ -270,6 +270,112 @@
             </div>
         </div>
 
+        <!-- PATTERNS -->
+        <div class="card c2 span2">
+            <span class="card-icon">🎯</span>
+            <h2>Patterns — When to Use</h2>
+            <table class="data-table">
+                <tr><th>Problem says...</th><th>Apply</th></tr>
+                <tr><td>"extract/manipulate digits"</td><td><code>%10</code> and <code>/10</code> loop</td></tr>
+                <tr><td>"reverse a number"</td><td><code>rev = rev*10 + last</code></td></tr>
+                <tr><td>"reads same forwards/backwards"</td><td>reverse → compare with copy</td></tr>
+                <tr><td>"find all factors"</td><td>loop till √N, pair = n/i</td></tr>
+                <tr><td>"check if prime"</td><td>count factors till √N == 2</td></tr>
+                <tr><td>"GCD / HCF"</td><td>Euclidean: a%b till 0</td></tr>
+                <tr><td>"LCM"</td><td>(a × b) / GCD(a,b)</td></tr>
+                <tr><td>"trailing zeros in n!"</td><td>count 5's: n/5 + n/25 + ...</td></tr>
+            </table>
+        </div>
+
+        <!-- COMMON MISTAKES -->
+        <div class="card c1">
+            <span class="card-icon">❌</span>
+            <h2>Common Mistakes</h2>
+            <div style="font-size:0.8rem;line-height:1.9;">
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Not storing copy of N (becomes 0 after loop)</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Overflow in reverse — use <code>long long</code></span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Wrong prime def (1 is NOT prime)</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>O(N) for factors — use √N always</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Subtraction Euclidean (slow) — use % modulo</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>-7%10 = -7 in C++ — handle negatives!</span></div>
+            </div>
+        </div>
+
+        <!-- INTERVIEW QUESTIONS -->
+        <div class="card c5 span3">
+            <span class="card-icon">🏢</span>
+            <h2>FAANG Interview Questions</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:8px;">
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent1);">Reverse Integer</strong> <span class="tag t-red">Amazon Google</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">reverse</span>(<span class="type">int</span> x) {
+    <span class="type">long</span> rev = <span class="num">0</span>;
+    <span class="kw">while</span>(x != <span class="num">0</span>) {
+        rev = rev*<span class="num">10</span> + x%<span class="num">10</span>;
+        x /= <span class="num">10</span>;
+    }
+    <span class="kw">if</span>(rev > INT_MAX || rev < INT_MIN) <span class="kw">return</span> <span class="num">0</span>;
+    <span class="kw">return</span> (<span class="type">int</span>)rev;
+}</pre>
+                    <span style="font-size:0.72rem;color:var(--accent1);">⚠️ Overflow check is MUST</span>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent5);">Palindrome Number</strong> <span class="tag t-purple">Microsoft Meta</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">bool</span> <span class="fn">isPalindrome</span>(<span class="type">int</span> x) {
+    <span class="kw">if</span>(x < <span class="num">0</span>) <span class="kw">return false</span>;
+    <span class="type">long</span> rev=<span class="num">0</span>, t=x;
+    <span class="kw">while</span>(t><span class="num">0</span>) { rev=rev*<span class="num">10</span>+t%<span class="num">10</span>; t/=<span class="num">10</span>; }
+    <span class="kw">return</span> rev == x;
+}</pre>
+                    <span style="font-size:0.72rem;color:var(--accent5);">Negatives → always false</span>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent2);">Count Primes (Sieve)</strong> <span class="tag t-green">Amazon Bloomberg</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">countPrimes</span>(<span class="type">int</span> n) {
+    <span class="type">vector</span>&lt;<span class="type">bool</span>&gt; s(n, <span class="num">true</span>);
+    <span class="type">int</span> cnt=<span class="num">0</span>;
+    <span class="kw">for</span>(<span class="type">int</span> i=<span class="num">2</span>; i&lt;n; i++) {
+        <span class="kw">if</span>(s[i]) { cnt++;
+            <span class="kw">for</span>(<span class="type">long</span> j=(<span class="type">long</span>)i*i; j&lt;n; j+=i)
+                s[j]=<span class="num">false</span>;
+        }
+    } <span class="kw">return</span> cnt;
+}</pre>
+                    <span style="font-size:0.72rem;color:var(--accent2);">Sieve = expected answer for large N</span>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent4);">Trailing Zeros in n!</strong> <span class="tag t-yellow">Meta Google</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">trailingZeroes</span>(<span class="type">int</span> n) {
+    <span class="type">int</span> cnt = <span class="num">0</span>;
+    <span class="kw">while</span>(n >= <span class="num">5</span>) {
+        cnt += n/<span class="num">5</span>;
+        n /= <span class="num">5</span>;
+    }
+    <span class="kw">return</span> cnt;
+}</pre>
+                    <span style="font-size:0.72rem;color:var(--accent4);">Count 5's: 10=2×5, more 2's always</span>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent6);">Power of Two</strong> <span class="tag t-pink">Apple Microsoft</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">bool</span> <span class="fn">isPowerOfTwo</span>(<span class="type">int</span> n) {
+    <span class="kw">return</span> n > <span class="num">0</span> && (n & (n-<span class="num">1</span>)) == <span class="num">0</span>;
+}
+<span class="cm">// 8=1000, 7=0111, AND=0000 ✅</span></pre>
+                    <span style="font-size:0.72rem;color:var(--accent6);">Bit trick O(1) — don't use loop!</span>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent3);">GCD of Array</strong> <span class="tag t-blue">Google Goldman</span>
+<pre style="font-size:0.7rem;margin-top:6px;"><span class="type">int</span> <span class="fn">gcdArray</span>(<span class="type">vector</span>&lt;<span class="type">int</span>&gt;& a) {
+    <span class="type">int</span> res = a[<span class="num">0</span>];
+    <span class="kw">for</span>(<span class="type">int</span> i=<span class="num">1</span>; i&lt;a.<span class="fn">size</span>(); i++)
+        res = <span class="fn">__gcd</span>(res, a[i]);
+    <span class="kw">return</span> res;
+}</pre>
+                    <span style="font-size:0.72rem;color:var(--accent3);">GCD(a,b,c) = GCD(GCD(a,b), c)</span>
+                </div>
+            </div>
+        </div>
+
         <!-- PROTIP -->
         <div class="card protip">
             <h2>⭐ Remember</h2>

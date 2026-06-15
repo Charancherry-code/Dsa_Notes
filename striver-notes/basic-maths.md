@@ -271,3 +271,142 @@ int gcd(int a, int b) {
 - [Time & Space Complexity →](./time-space-complexity.md)
 - [C++ STL →](./cpp-stl.md)
 - [Recursion & Backtracking →](../dsa-notes/recursion-backtracking.md)
+
+
+---
+
+## 🎯 Patterns — When to Use What
+
+| You see this in the problem... | Apply this |
+|-------------------------------|-----------|
+| "extract/manipulate individual digits" | % 10 and / 10 loop |
+| "reverse a number" | rev = rev*10 + lastDigit |
+| "check if number reads same forwards/backwards" | reverse it, compare with copy |
+| "find all factors/divisors" | loop till √N, pair = n/i |
+| "check if prime" | count factors till √N, must be exactly 2 |
+| "GCD / HCF of two numbers" | Euclidean: a%b till one is 0 |
+| "LCM of two numbers" | LCM = (a × b) / GCD(a, b) |
+| "number of digits in N" | log₁₀(N) + 1 or count via /10 |
+| "trailing zeros in factorial" | count factors of 5: n/5 + n/25 + n/125... |
+
+---
+
+## ❌ Common Mistakes
+
+1. **Forgetting to store copy of N** — after digit extraction, N becomes 0. If you need the original later (palindrome, armstrong), store `duplicate = n` FIRST.
+
+2. **Integer overflow in reverse** — reversing a large number can overflow int. Use `long long` or check before multiplying.
+
+3. **Wrong prime definition** — "divisible by 1 and itself" makes 1 prime. Correct: "exactly 2 factors."
+
+4. **Looping till N for factors** — O(N) is unnecessary. Always use √N approach in interviews.
+
+5. **Not handling edge cases in GCD** — GCD(0, n) = n. GCD(1, n) = 1. Make sure your loop handles a=0 or b=0.
+
+6. **Using subtraction Euclidean** — a-b is slow (52,10 takes 5 steps). Use modulo version: a%b (1 step).
+
+7. **Negative numbers in modulo** — in C++, -7 % 10 = -7, not 3. Handle negatives before extracting digits.
+
+8. **Forgetting n/i != i check in divisors** — for perfect squares (36 → 6×6), you'd print 6 twice without this check.
+
+---
+
+## 🏢 Interview Questions (FAANG)
+
+### Q1: Reverse Integer (LeetCode 7) — Amazon, Google
+> Given a 32-bit signed integer, reverse it. Return 0 if overflow.
+
+```cpp
+int reverse(int x) {
+    long rev = 0;
+    while(x != 0) {
+        rev = rev * 10 + x % 10;
+        x /= 10;
+    }
+    if(rev > INT_MAX || rev < INT_MIN) return 0;
+    return (int)rev;
+}
+// ⚠️ Handle negatives: x%10 gives negative remainder in C++
+// ⚠️ Overflow check is MUST — interviewers will ask
+```
+
+### Q2: Palindrome Number (LeetCode 9) — Microsoft, Meta
+> Without converting to string, check if integer is palindrome.
+
+```cpp
+bool isPalindrome(int x) {
+    if(x < 0) return false;  // negatives never palindrome
+    long rev = 0, temp = x;
+    while(temp > 0) {
+        rev = rev * 10 + temp % 10;
+        temp /= 10;
+    }
+    return rev == x;
+}
+// Follow-up: Can you do it without reversing entire number?
+// Yes — reverse only half, compare two halves.
+```
+
+### Q3: Count Primes (LeetCode 204) — Amazon, Bloomberg
+> Count primes less than n.
+
+```cpp
+// Sieve of Eratosthenes — O(N log log N)
+int countPrimes(int n) {
+    vector<bool> sieve(n, true);
+    int count = 0;
+    for(int i = 2; i < n; i++) {
+        if(sieve[i]) {
+            count++;
+            for(long j = (long)i*i; j < n; j += i)
+                sieve[j] = false;
+        }
+    }
+    return count;
+}
+// ⚠️ Simple √N check per number is O(N√N) — too slow for large N
+// ⚠️ Sieve is the interview-expected answer
+```
+
+### Q4: GCD of Array (Asked in Google, Goldman Sachs)
+> Find GCD of an entire array of numbers.
+
+```cpp
+int gcdArray(vector<int>& arr) {
+    int result = arr[0];
+    for(int i = 1; i < arr.size(); i++)
+        result = __gcd(result, arr[i]); // built-in!
+    return result;
+}
+// Pattern: GCD(a,b,c) = GCD(GCD(a,b), c)
+// ⚠️ __gcd is built-in in C++. In interview, know Euclidean too.
+```
+
+### Q5: Power of Two / Three (LeetCode 231/326) — Apple, Microsoft
+> Check if n is a power of 2.
+
+```cpp
+bool isPowerOfTwo(int n) {
+    return n > 0 && (n & (n-1)) == 0;
+}
+// Pattern: Powers of 2 have exactly 1 set bit
+// 8 = 1000, 8-1 = 0111, AND = 0000 ✅
+// ⚠️ Don't use loop — bit trick is O(1)
+```
+
+### Q6: Trailing Zeros in Factorial (LeetCode 172) — Meta, Google
+> How many trailing zeros in n! ?
+
+```cpp
+int trailingZeroes(int n) {
+    int count = 0;
+    while(n >= 5) {
+        count += n / 5;
+        n /= 5;
+    }
+    return count;
+}
+// Pattern: trailing zero = factor of 10 = 2×5
+// Always more 2's than 5's, so just count 5's
+// 25 contributes two 5's (5×5), 125 contributes three, etc.
+```
