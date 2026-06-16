@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Sort — Striver A2Z DSA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Inter:wght@300;400;600;700;900&family=Fira+Code:wght@400;500&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#faf8f5;--surface:#fff;--shadow:0 4px 24px rgba(0,0,0,0.06);--hover:0 12px 40px rgba(0,0,0,0.1);--accent1:#e63946;--accent2:#2a9d8f;--accent3:#457b9d;--accent4:#e9a820;--accent5:#7c3aed;--accent6:#db2777;--accent7:#059669;--text:#1a1a2e;--muted:#6b7280;--border:#e5e7eb;--code-bg:#1e293b;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 0% 0%,rgba(122,58,237,0.03) 0%,transparent 50%),radial-gradient(ellipse at 100% 100%,rgba(42,157,143,0.03) 0%,transparent 50%);z-index:0;}
+        .container{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24px;}
+        .header{text-align:center;margin-bottom:50px;}
+        .header h1{font-family:'Permanent Marker',cursive;font-size:3.2rem;background:linear-gradient(135deg,var(--accent4),var(--accent6),var(--accent1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .header .sub{font-family:'Caveat',cursive;font-size:1.4rem;color:var(--muted);margin-top:6px;}
+        .header .tags{margin-top:14px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;position:relative;overflow:hidden;box-shadow:var(--shadow);transition:all 0.35s cubic-bezier(0.4,0,0.2,1);}
+        .card:hover{transform:translateY(-4px);box-shadow:var(--hover);}
+        .card::before{content:'';position:absolute;top:0;left:0;width:100%;height:5px;}
+        .card.c1::before{background:linear-gradient(90deg,var(--accent1),var(--accent6));}.card.c2::before{background:linear-gradient(90deg,var(--accent2),var(--accent7));}.card.c3::before{background:linear-gradient(90deg,var(--accent3),var(--accent5));}.card.c4::before{background:linear-gradient(90deg,var(--accent4),var(--accent1));}.card.c5::before{background:linear-gradient(90deg,var(--accent5),var(--accent3));}.card.c6::before{background:linear-gradient(90deg,var(--accent6),var(--accent4));}.card.c7::before{background:linear-gradient(90deg,var(--accent7),var(--accent2));}
+        .card.span2{grid-column:span 2;}.card.span3{grid-column:1/-1;}
+        .card-icon{font-size:2rem;margin-bottom:6px;display:block;}
+        .card h2{font-family:'Permanent Marker',cursive;font-size:1.4rem;margin-bottom:12px;letter-spacing:1px;}
+        .card.c1 h2{color:var(--accent1);}.card.c2 h2{color:var(--accent2);}.card.c3 h2{color:var(--accent3);}.card.c4 h2{color:var(--accent4);}.card.c5 h2{color:var(--accent5);}.card.c6 h2{color:var(--accent6);}.card.c7 h2{color:var(--accent7);}
+        pre{background:var(--code-bg);border-radius:12px;padding:14px 16px;font-family:'Fira Code',monospace;font-size:0.74rem;line-height:1.7;overflow-x:auto;margin:8px 0;color:#e2e8f0;}
+        code{font-family:'Fira Code',monospace;background:#f1f5f9;padding:2px 7px;border-radius:5px;font-size:0.76rem;color:var(--accent5);}
+        .kw{color:#c084fc;font-weight:500;}.fn{color:#67e8f9;}.str{color:#6ee7b7;}.cm{color:#94a3b8;font-style:italic;}.num{color:#fbbf24;}.type{color:#f472b6;}
+        .tag{display:inline-block;padding:4px 12px;border-radius:8px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin:3px 2px;}
+        .tag.t-red{background:#fef2f2;color:var(--accent1);border:1px solid #fecaca;}.tag.t-green{background:#ecfdf5;color:var(--accent7);border:1px solid #a7f3d0;}.tag.t-blue{background:#eff6ff;color:var(--accent3);border:1px solid #bfdbfe;}.tag.t-yellow{background:#fffbeb;color:#b45309;border:1px solid #fde68a;}.tag.t-purple{background:#f5f3ff;color:var(--accent5);border:1px solid #ddd6fe;}.tag.t-pink{background:#fdf2f8;color:var(--accent6);border:1px solid #fbcfe8;}
+        .data-table{width:100%;border-collapse:separate;border-spacing:0;margin-top:8px;border-radius:12px;overflow:hidden;font-size:0.76rem;border:1px solid var(--border);}
+        .data-table th{background:#f8fafc;color:var(--text);padding:8px 10px;text-align:left;font-weight:700;text-transform:uppercase;font-size:0.65rem;letter-spacing:0.5px;border-bottom:2px solid var(--border);}
+        .data-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;}
+        .data-table tr:hover td{background:#f8fafc;}
+        .tip-box{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:0.8rem;display:flex;align-items:flex-start;gap:8px;}
+        .warn-box{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:0.8rem;display:flex;align-items:flex-start;gap:8px;color:var(--accent1);}
+        .handwritten{font-family:'Caveat',cursive;font-size:1.1rem;color:var(--accent5);}
+        .protip{background:linear-gradient(135deg,#f5f3ff,#eff6ff,#ecfdf5);border:2px solid #ddd6fe;border-radius:20px;padding:28px;text-align:center;}
+        .protip h2{font-family:'Permanent Marker',cursive;font-size:1.6rem;color:var(--accent5);}.protip p{font-family:'Caveat',cursive;font-size:1.3rem;color:var(--text);margin-top:8px;}
+        @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;}.card.span3{grid-column:span 2;}}
+        @media(max-width:600px){.grid{grid-template-columns:1fr;}.card.span2,.card.span3{grid-column:span 1;}.header h1{font-size:1.8rem;}.container{padding:20px 12px;}}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Quick Sort</h1>
+        <div class="sub">Partition & Conquer — In-Place ⚡</div>
+        <div class="tags"><span class="tag t-green">O(1) Space</span><span class="tag t-yellow">N log N avg</span><span class="tag t-red">Not Stable</span><span class="tag t-purple">Divide & Conquer</span></div>
+    </div>
+    <div class="grid">
+
+        <div class="card c4 span2">
+            <span class="card-icon">🧠</span>
+            <h2>Core Idea</h2>
+            <ol style="font-size:0.88rem;line-height:1.9;padding-left:18px;">
+                <li>Pick a <strong>pivot</strong> (first/last/random)</li>
+                <li>Place pivot at its <strong>correct position</strong></li>
+                <li><strong>Smaller</strong> left, <strong>larger</strong> right</li>
+                <li>Recursively sort left & right</li>
+            </ol>
+            <div class="handwritten">Every element reaches correct spot → sorted!</div>
+        </div>
+
+        <div class="card c1">
+            <span class="card-icon">⏱️</span>
+            <h2>Complexity</h2>
+            <table class="data-table">
+                <tr><th>Case</th><th>Time</th></tr>
+                <tr><td>Best</td><td>O(N log N)</td></tr>
+                <tr><td>Average</td><td>O(N log N)</td></tr>
+                <tr><td>Worst</td><td>O(N²) sorted arr</td></tr>
+                <tr><td>Space</td><td>O(1) in-place!</td></tr>
+            </table>
+        </div>
+
+        <div class="card c2 span2">
+            <span class="card-icon">💻</span>
+            <h2>Partition + quickSort</h2>
+<pre><span class="type">int</span> <span class="fn">partition</span>(<span class="type">vector</span>&lt;<span class="type">int</span>&gt;& a, <span class="type">int</span> low, <span class="type">int</span> high) {
+    <span class="type">int</span> pivot = a[low], i = low, j = high;
+    <span class="kw">while</span>(i &lt; j) {
+        <span class="kw">while</span>(a[i] &lt;= pivot && i &lt; high) i++;
+        <span class="kw">while</span>(a[j] &gt; pivot && j &gt; low) j--;
+        <span class="kw">if</span>(i &lt; j) <span class="fn">swap</span>(a[i], a[j]);
+    }
+    <span class="fn">swap</span>(a[low], a[j]);
+    <span class="kw">return</span> j;
+}
+<span class="kw">void</span> <span class="fn">quickSort</span>(<span class="type">vector</span>&lt;<span class="type">int</span>&gt;& a, <span class="type">int</span> low, <span class="type">int</span> high) {
+    <span class="kw">if</span>(low &lt; high) {
+        <span class="type">int</span> p = <span class="fn">partition</span>(a, low, high);
+        <span class="fn">quickSort</span>(a, low, p-<span class="num">1</span>);
+        <span class="fn">quickSort</span>(a, p+<span class="num">1</span>, high);
+    }
+}</pre>
+        </div>
+
+        <div class="card c5">
+            <span class="card-icon">🔍</span>
+            <h2>Partition Logic</h2>
+            <p style="font-size:0.8rem;line-height:1.8;">
+                • <strong>i</strong> → first element &gt; pivot (from left)<br>
+                • <strong>j</strong> → first element &lt; pivot (from right)<br>
+                • i &lt; j → swap<br>
+                • crossed → swap pivot with j<br>
+                • return j = partition index
+            </p>
+        </div>
+
+        <div class="card c1 span3">
+            <span class="card-icon">🆚</span>
+            <h2>Quick vs Merge Sort</h2>
+            <table class="data-table">
+                <tr><th></th><th>Quick Sort</th><th>Merge Sort</th></tr>
+                <tr><td>Avg TC</td><td>O(N log N)</td><td>O(N log N)</td></tr>
+                <tr><td>Worst TC</td><td>O(N²) (rare w/ random pivot)</td><td>O(N log N) ✅</td></tr>
+                <tr><td>Space</td><td>O(1) ✅ in-place</td><td>O(N) temp</td></tr>
+                <tr><td>Stable?</td><td>❌ No</td><td>✅ Yes</td></tr>
+                <tr><td>In practice</td><td>Faster (less overhead)</td><td>More predictable</td></tr>
+            </table>
+        </div>
+
+        <div class="card c6 span2">
+            <span class="card-icon">🎯</span>
+            <h2>Patterns</h2>
+            <table class="data-table">
+                <tr><th>Use Quick Sort when...</th><th></th></tr>
+                <tr><td>In-place sorting needed</td><td>No O(N) extra space</td></tr>
+                <tr><td>Average case matters</td><td>Random pivot avoids worst</td></tr>
+                <tr><td>Cache performance</td><td>Contiguous access</td></tr>
+                <tr><td>Don't need stability</td><td>Equal may reorder</td></tr>
+            </table>
+        </div>
+
+        <div class="card c1">
+            <span class="card-icon">❌</span>
+            <h2>Common Mistakes</h2>
+            <div style="font-size:0.76rem;line-height:1.8;">
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>First pivot on sorted arr → O(N²)</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Missing i&lt;high / j&gt;low guards</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Swap pivot with i instead of j</span></div>
+                <div class="warn-box" style="margin:4px 0;"><span>❌</span><span>Saying quick sort is stable (NOT)</span></div>
+            </div>
+        </div>
+
+        <div class="card c5 span3">
+            <span class="card-icon">🏢</span>
+            <h2>FAANG Interview Questions</h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:8px;">
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent2);">Quick Select (Kth smallest)</strong> <span class="tag t-green">Google Amazon</span>
+<pre style="font-size:0.68rem;margin-top:6px;"><span class="type">int</span> <span class="fn">quickSelect</span>(a, low, high, k) {
+    <span class="type">int</span> p = <span class="fn">partition</span>(a, low, high);
+    <span class="kw">if</span>(p == k-<span class="num">1</span>) <span class="kw">return</span> a[p];
+    <span class="kw">if</span>(p &gt; k-<span class="num">1</span>)
+        <span class="kw">return</span> <span class="fn">quickSelect</span>(a, low, p-<span class="num">1</span>, k);
+    <span class="kw">return</span> <span class="fn">quickSelect</span>(a, p+<span class="num">1</span>, high, k);
+}
+<span class="cm">// Avg O(N) — only one side!</span></pre>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent1);">Worst case fix?</strong> <span class="tag t-red">Theory</span>
+                    <p style="font-size:0.74rem;margin-top:6px;line-height:1.7;">Random pivot / median-of-three / introsort (switch to heap sort if depth &gt; 2logN).</p>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent3);">Quick vs Merge?</strong> <span class="tag t-blue">Theory</span>
+                    <p style="font-size:0.74rem;margin-top:6px;line-height:1.7;">Quick: in-place, faster avg. Merge: stable, guaranteed N log N. std::sort uses introsort.</p>
+                </div>
+                <div style="background:#f8fafc;border:1px solid var(--border);border-radius:12px;padding:14px;">
+                    <strong style="color:var(--accent4);">Stable?</strong> <span class="tag t-yellow">Theory</span>
+                    <p style="font-size:0.74rem;margin-top:6px;line-height:1.7;">No — partition swaps non-adjacent elements. Use merge sort for stability.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card protip">
+            <h2>⭐ Remember</h2>
+            <p>Pick pivot, partition (smaller left, larger right), recurse both sides. O(N log N) avg, O(1) space, in-place. Random pivot avoids O(N²). Quick Select finds Kth in O(N).</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

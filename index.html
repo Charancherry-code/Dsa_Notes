@@ -59,37 +59,51 @@
             display: grid;
             gap: 12px;
         }
-        .note-list a {
+        .note-row {
             display: flex;
             align-items: center;
             gap: 14px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 18px 22px;
-            text-decoration: none;
-            color: var(--text);
+            padding: 16px 20px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.04);
             transition: all 0.3s ease;
         }
-        .note-list a:hover {
+        .note-row:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(0,0,0,0.08);
             border-color: var(--accent5);
         }
+        .note-num {
+            font-weight: 800;
+            color: var(--accent5);
+            font-size: 0.9rem;
+            min-width: 22px;
+        }
         .note-icon { font-size: 1.8rem; }
+        .note-info { flex: 1; }
         .note-info h3 { font-size: 1rem; font-weight: 700; }
         .note-info p { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+        .links { display: flex; gap: 8px; }
         .badge {
-            margin-left: auto;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
         }
+        .badge:hover { transform: scale(1.08); }
         .badge.html { background: #f5f3ff; color: var(--accent5); border: 1px solid #ddd6fe; }
+        .badge.html:hover { background: var(--accent5); color: #fff; }
         .badge.md { background: #ecfdf5; color: var(--accent2); border: 1px solid #a7f3d0; }
+        .badge.md:hover { background: var(--accent2); color: #fff; }
+        @media (max-width: 560px) {
+            .note-row { flex-wrap: wrap; }
+            .links { width: 100%; }
+        }
         .footer {
             text-align: center;
             margin-top: 60px;
@@ -105,97 +119,115 @@
             <p>Striver A2Z DSA — FAANG/MAANG Interview Prep</p>
         </div>
 
-        <div class="section-title">📘 Striver A2Z Notes (in order)</div>
+        <div class="section-title">📘 Striver A2Z Notes — HTML + Markdown</div>
         <ul class="note-list">
-            <li>
-                <a href="./dsa-notes/cpp-basics.html">
-                    <span class="note-icon">🏗️</span>
-                    <div class="note-info">
-                        <h3>C++ Basics for DSA</h3>
-                        <p>Data types, loops, functions, pass by ref</p>
-                    </div>
-                    <span class="badge html">HTML</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">1</span>
+                <span class="note-icon">🏗️</span>
+                <div class="note-info">
+                    <h3>C++ Basics for DSA</h3>
+                    <p>Data types, loops, functions, pass by ref</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./dsa-notes/cpp-basics.html">HTML</a>
+                    <a class="badge md" href="./dsa-notes/cpp-basics.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/time-space-complexity.html">
-                    <span class="note-icon">⏱️</span>
-                    <div class="note-info">
-                        <h3>Time & Space Complexity</h3>
-                        <p>Big O, rules, 10⁸ trick, patterns</p>
-                    </div>
-                    <span class="badge html">HTML</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">2</span>
+                <span class="note-icon">⏱️</span>
+                <div class="note-info">
+                    <h3>Time & Space Complexity</h3>
+                    <p>Big O, rules, 10⁸ trick, patterns</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/time-space-complexity.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/time-space-complexity.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/cpp-stl.html">
-                    <span class="note-icon">🧰</span>
-                    <div class="note-info">
-                        <h3>C++ STL Complete</h3>
-                        <p>Vector, Map, Set, Stack, Queue, Sort, Comparators</p>
-                    </div>
-                    <span class="badge html">HTML</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">3</span>
+                <span class="note-icon">🧰</span>
+                <div class="note-info">
+                    <h3>C++ STL Complete</h3>
+                    <p>Vector, Map, Set, Stack, Queue, Sort, Comparators</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/cpp-stl.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/cpp-stl.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/basic-maths.html">
-                    <span class="note-icon">🔢</span>
-                    <div class="note-info">
-                        <h3>Basic Maths & Euclidean Algorithm</h3>
-                        <p>Digit extraction, reverse, palindrome, GCD, prime, √N</p>
-                    </div>
-                    <span class="badge html">HTML</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">4</span>
+                <span class="note-icon">🔢</span>
+                <div class="note-info">
+                    <h3>Basic Maths & Euclidean Algorithm</h3>
+                    <p>Digit extraction, reverse, palindrome, GCD, prime, √N</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/basic-maths.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/basic-maths.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/recursion-intro.html">
-                    <span class="note-icon">🔄</span>
-                    <div class="note-info">
-                        <h3>Recursion (All Lectures)</h3>
-                        <p>Base case, backtracking, functional, multiple calls, fibonacci</p>
-                    </div>
-                    <span class="badge html">HTML</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">5</span>
+                <span class="note-icon">🔄</span>
+                <div class="note-info">
+                    <h3>Recursion (All Lectures)</h3>
+                    <p>Base case, backtracking, functional, multiple calls, fibonacci</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/recursion-intro.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/recursion-intro.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/hashing.md">
-                    <span class="note-icon">#️⃣</span>
-                    <div class="note-info">
-                        <h3>Hashing — Maps & Collisions</h3>
-                        <p>Frequency, map vs unordered_map, division method, Two Sum</p>
-                    </div>
-                    <span class="badge md">MD</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">6</span>
+                <span class="note-icon">#️⃣</span>
+                <div class="note-info">
+                    <h3>Hashing — Maps & Collisions</h3>
+                    <p>Frequency, map vs unordered_map, division method, Two Sum</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/hashing.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/hashing.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/sorting-1.md">
-                    <span class="note-icon">🔃</span>
-                    <div class="note-info">
-                        <h3>Sorting Part 1 — Selection, Bubble, Insertion</h3>
-                        <p>Algorithms, code, TC comparison, stability, interview Qs</p>
-                    </div>
-                    <span class="badge md">MD</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">7</span>
+                <span class="note-icon">🔃</span>
+                <div class="note-info">
+                    <h3>Sorting Part 1 — Selection, Bubble, Insertion</h3>
+                    <p>Algorithms, code, TC comparison, stability, interview Qs</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/sorting-1.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/sorting-1.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/sorting-2-merge.md">
-                    <span class="note-icon">🔀</span>
-                    <div class="note-info">
-                        <h3>Merge Sort — Divide & Merge</h3>
-                        <p>Algorithm, two-pointer merge, O(N log N), count inversions</p>
-                    </div>
-                    <span class="badge md">MD</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">8</span>
+                <span class="note-icon">🔀</span>
+                <div class="note-info">
+                    <h3>Merge Sort — Divide & Merge</h3>
+                    <p>Algorithm, two-pointer merge, O(N log N), count inversions</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/sorting-2-merge.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/sorting-2-merge.md">MD</a>
+                </div>
             </li>
-            <li>
-                <a href="./striver-notes/sorting-3-quick.md">
-                    <span class="note-icon">⚡</span>
-                    <div class="note-info">
-                        <h3>Quick Sort — Partition & Conquer</h3>
-                        <p>Pivot, partition, in-place O(1) space, Quick Select</p>
-                    </div>
-                    <span class="badge md">MD</span>
-                </a>
+            <li class="note-row">
+                <span class="note-num">9</span>
+                <span class="note-icon">⚡</span>
+                <div class="note-info">
+                    <h3>Quick Sort — Partition & Conquer</h3>
+                    <p>Pivot, partition, in-place O(1) space, Quick Select</p>
+                </div>
+                <div class="links">
+                    <a class="badge html" href="./striver-notes/sorting-3-quick.html">HTML</a>
+                    <a class="badge md" href="./striver-notes/sorting-3-quick.md">MD</a>
+                </div>
             </li>
         </ul>
 
