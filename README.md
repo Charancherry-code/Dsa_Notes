@@ -5,9 +5,6 @@
 
 ## 🌐 Live Website
 
-After enabling GitHub Pages, your notes will be live at:  
-**`https://YOUR_USERNAME.github.io/REPO_NAME/`**
-
 ## 📂 Structure
 
 ```
